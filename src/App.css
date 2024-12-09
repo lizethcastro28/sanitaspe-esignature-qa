@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +42,61 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.amplify-button.amplify-button--primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.amplify-field-group__control .amplify-button--primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.amplify-button.amplify-button--primary:hover {
+  background-color: #0765ff;
+  border-color: #0765ff;
+}
+
+.amplify-button.amplify-button--primary:active {
+  background-color: #0765ff;
+  border-color: #0765ff;
+}
+
+/* Custom class for the button */
+.custom-button {
+  background-color: #0765ff;
+  border-color: #0765ff;
+  color: white;
+  margin-top: 20px;
+}
+
+.custom-button:hover {
+  background-color: #0765ff;
+  border-color: #0765ff;
+}
+
+.custom-button:active {
+  background-color: #0765ff;
+  border-color: #0765ff;
+}
+
+.image-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.image-row img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
 }
