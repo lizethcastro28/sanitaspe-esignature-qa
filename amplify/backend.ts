@@ -31,7 +31,7 @@ const apiStack = backend.createStack("api-stack");
 
 // create a new REST API
 const myRestApi = new RestApi(apiStack, "RestApi", {
-  restApiName: "firmaBiometricaApi",
+  restApiName: "biometricApi",
   deploy: true,
   deployOptions: {
     stageName: "dev",
@@ -44,7 +44,7 @@ const myRestApi = new RestApi(apiStack, "RestApi", {
 });
 //==============create s3 bucket====================
 const livenessBucket = new s3.Bucket(apiStack, 'LivenessBucket', {
-  bucketName: 'liveness-images-sessions',
+  bucketName: 'liveness-images-sessions-qa',
   versioned: true,
   removalPolicy: cdk.RemovalPolicy.RETAIN,
 });
