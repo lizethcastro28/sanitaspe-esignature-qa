@@ -101,7 +101,7 @@ const App = () => {
 
     try {
       const restOperation = get({
-        apiName: 'firmaBiometricaApi',
+        apiName: 'biometricApi',
         path: path,
       });
 
