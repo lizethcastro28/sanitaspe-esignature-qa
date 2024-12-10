@@ -1,6 +1,8 @@
 // utils/apiService.ts
 import { post } from 'aws-amplify/data';
 
+const apiGateway = 'biometricApi';
+
 export async function readStream(stream: ReadableStream<Uint8Array>): Promise<string> {
   const reader = stream.getReader();
   const decoder = new TextDecoder();
@@ -60,7 +62,7 @@ export const uploadObjectToS3 = async (data: any): Promise<boolean> => {
   try {
       // Realiza la operación POST
       const restOperation = post({
-          apiName: 'firmaBiometricaApi',
+          apiName: apiGateway,
           path: `upload`,
           options: {
               body: requestBody,
