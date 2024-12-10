@@ -36,6 +36,8 @@ interface FooterConfig {
   bgColor: string;
 }
 
+const apiGateway = 'biometricApi';
+
 const App = () => {
   const [showBody, setShowBody] = useState(false);
   const [name, setName] = useState("");
@@ -101,7 +103,7 @@ const App = () => {
 
     try {
       const restOperation = get({
-        apiName: 'biometricApi',
+        apiName: apiGateway,
         path: path,
       });
 

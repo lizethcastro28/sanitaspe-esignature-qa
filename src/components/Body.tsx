@@ -13,6 +13,8 @@ interface BodyProps {
     instructions_location: 'left' | 'right';
 }
 
+const apiGateway = 'biometricApi';
+
 const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [createLivenessApiData, setCreateLivenessApiData] = useState<{ sessionId: string } | null>(null);
@@ -143,7 +145,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const fetchCreateLiveness = async () => {
         try {
             const restOperation = post({
-                apiName: 'firmaBiometricaApi',
+                apiName: apiGateway,
                 path: 'session',
             });
             const response = (await restOperation.response) as unknown as Response;
@@ -198,7 +200,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
         if (createLivenessApiData) {
             try {
                 const restOperation = get({
-                    apiName: 'firmaBiometricaApi',
+                    apiName: apiGateway,
                     path: `session/${createLivenessApiData.sessionId}`,
                 });
                 const response = (await restOperation.response) as unknown as Response;
@@ -250,7 +252,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const processCircuit = async (circuit: string | null, data: any) => {
         try {
             const restOperation = post({
-                apiName: 'firmaBiometricaApi',
+                apiName: apiGateway,
                 path: `circuit?circuit=${circuit}`,
                 options: {
                     body: data,
@@ -291,7 +293,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
         try {
             // Realiza la operación POST
             const restOperation = post({
-                apiName: 'firmaBiometricaApi',
+                apiName: apiGateway,
                 path: `upload`,
                 options: {
                     body: requestBody,
