@@ -36,7 +36,7 @@ interface FooterConfig {
   bgColor: string;
 }
 
-const apiGateway = import.meta.env.VITE_API_GATEWAY_NAME;
+const apiGateway = 'biometricApi'
 
 const App = () => {
   const [showBody, setShowBody] = useState(false);
