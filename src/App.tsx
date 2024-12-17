@@ -9,6 +9,7 @@ import { readStream, fillPdfDocuments } from './utils/functions';
 
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import Camera from './components/Camera';
 
 type LocationType = 'left' | 'center' | 'right';
 type InstructionsLocationType = 'left' | 'right';
@@ -46,6 +47,7 @@ const App = () => {
   const [status, setStatus] = useState(false);
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("tus documentos ya fueron firmados");
+  const [isRekognition, setIsRekognition] = useState(false);
 
 
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
@@ -129,10 +131,23 @@ const App = () => {
           const configPage = responseJson.configPage;
           const biometricHistory = responseJson.biometricHistory;
           setName(biometricHistory.signers?.[0]?.name ?? "");
-          //No firmar
-          if (biometricHistory.idStatus == 1) {
+          //Verifico si debo Firmar
+          let { idStatus, isRekognition } = biometricHistory;
+
+          if (idStatus === 1 && isRekognition === true) {
+            //subir el DNI
+            setIsRekognition(true);
+
+            //si true, firmar
+            //setStatus(true);
+            setDetalleFirma("envíanos la foto de tu DNI");
+          }
+
+          //Si ya tiene DNI
+          if (idStatus === 1 && isRekognition === false) {
+            //solo firmo
             setStatus(true);
-            setDetalleFirma("estos son tus documentos")
+            setDetalleFirma("estos son tus documentos");
           }
 
           setHeaderConfig({
@@ -231,6 +246,10 @@ const App = () => {
                 </div>
 
               </>
+            )}
+
+            {isRekognition && (
+              <Camera docType='DNI'/>
             )}
 
             {showBody && (

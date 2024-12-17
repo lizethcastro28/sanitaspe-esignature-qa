@@ -16,6 +16,7 @@ import { myApiFunction } from "./functions/api-function/resource";
 import { configFunction } from "./functions/config-function/resource";
 import { circuitFunction } from "./functions/circuit-function/resource";
 import { uploadFunction } from "./functions/upload-function/resource"
+import { identityVerifyFunction } from "./functions/identity-verify-function/resource";
 
 const backend = defineBackend({
   auth,
@@ -24,6 +25,7 @@ const backend = defineBackend({
   configFunction,
   circuitFunction,
   uploadFunction,
+  identityVerifyFunction,
 });
 
 //=============create a new API stack==============
@@ -88,6 +90,44 @@ configPath.addProxy({
   defaultIntegration: lambdaConfigIntegration,
 });
 
+// ==============Create resource identityVerify============
+// create a new Lambda integration
+const lambdaIdentityVerifyIntegration = new LambdaIntegration(
+  backend.identityVerifyFunction.resources.lambda
+);
+// create a new resource path with IAM authorization
+const identityVerifyPath = myRestApi.root.addResource("identity-verify", {
+  defaultMethodOptions: {
+    authorizationType: AuthorizationType.IAM,
+  },
+});
+// add methods you would like to create to the resource path
+identityVerifyPath.addMethod("POST", lambdaIdentityVerifyIntegration);
+// add a proxy resource path to the API
+identityVerifyPath.addProxy({
+  anyMethod: true,
+  defaultIntegration: lambdaIdentityVerifyIntegration,
+});
+
+// ==============Create resource upload============
+// create a new Lambda integration
+const lambdaUploadIntegration = new LambdaIntegration(
+  backend.uploadFunction.resources.lambda
+);
+// create a new resource path with IAM authorization
+const uploadPath = myRestApi.root.addResource("upload", {
+  defaultMethodOptions: {
+    authorizationType: AuthorizationType.IAM,
+  },
+});
+// add methods you would like to create to the resource path
+uploadPath.addMethod("POST", lambdaUploadIntegration);
+// add a proxy resource path to the API
+uploadPath.addProxy({
+  anyMethod: true,
+  defaultIntegration: lambdaUploadIntegration,
+});
+
 // ==============Create resource processCircuit============
 // create a new Lambda integration
 const lambdaCircuitIntegration = new LambdaIntegration(
@@ -107,24 +147,6 @@ circuitPath.addProxy({
   defaultIntegration: lambdaCircuitIntegration,
 });
 
-// ==============Create resource processCircuit============
-// create a new Lambda integration
-const lambdaUploadIntegration = new LambdaIntegration(
-  backend.uploadFunction.resources.lambda
-);
-// create a new resource path with IAM authorization
-const uploadPath = myRestApi.root.addResource("upload", {
-  defaultMethodOptions: {
-    authorizationType: AuthorizationType.IAM,
-  },
-});
-// add methods you would like to create to the resource path
-uploadPath.addMethod("POST", lambdaUploadIntegration);
-// add a proxy resource path to the API
-uploadPath.addProxy({
-  anyMethod: true,
-  defaultIntegration: lambdaUploadIntegration,
-});
 
 //================create a new Cognito User Pools authorizer
 const cognitoAuth = new CognitoUserPoolsAuthorizer(apiStack, "CognitoAuth", {
@@ -155,6 +177,8 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
         `${myRestApi.arnForExecuteApi("*", "/circuit/*", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/upload", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/upload/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/identity-verify", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/identity-verify/*", "dev")}`,
       ],
     })
   ],
