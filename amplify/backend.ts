@@ -262,6 +262,10 @@ lambdaConfigRole.attachInlinePolicy(SMPolicy);
 const lambdaUploadRole = backend.uploadFunction.resources.lambda.role as Role;
 lambdaUploadRole.attachInlinePolicy(S3Policy);
 
+// attach the policy to the Lambda execution role
+const lambdaIndetityVerifyRole = backend.configFunction.resources.lambda.role as Role;
+lambdaIndetityVerifyRole.attachInlinePolicy(SMPolicy);
+
 // add outputs to the configuration file
 backend.addOutput({
   custom: {
