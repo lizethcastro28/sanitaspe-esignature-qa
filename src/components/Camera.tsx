@@ -1,14 +1,20 @@
 import React, { useRef, useState } from "react";
+import { post } from "aws-amplify/data";
 import Webcam from "react-webcam";
+import { readStream } from "../utils/functions";
 
 interface CameraProps {
   docType: string; // Tipo de documento (e.g., DNI, Pasaporte)
+  circuit: string; // Identificador del circuito para la llamada al API
 }
 
-const Camera: React.FC<CameraProps> = ({ docType }) => {
+const apiGateway = "biometricApi";
+
+const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+  const [imageData, setImageData] = useState<{ name: string; size: number; content: string } | null>(null);
 
   const capturePhoto = async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -18,17 +24,74 @@ const Camera: React.FC<CameraProps> = ({ docType }) => {
       return;
     }
 
+    // Generar nombre del archivo dinámicamente
+    const imageName = `${docType}-${Date.now()}.jpg`;
+
+    // Calcular tamaño estimado en bytes (base64 tiene un overhead del 33%)
+    const imageSize = Math.round((imageSrc.length * 3) / 4 - (imageSrc.endsWith("==") ? 2 : 1));
+
+    // Crear el objeto con los datos de la imagen
+    const data = {
+      name: imageName,
+      size: imageSize,
+      content: imageSrc,
+    };
+
+    // Guardar el estado
     setCapturedImage(imageSrc);
+    setImageData(data);
     setIsCameraActive(false); // Ocultar la cámara
+
+    console.log("Objeto data:", data);
   };
 
   const retakePhoto = () => {
     setCapturedImage(null);
+    setImageData(null);
     setIsCameraActive(true); // Mostrar la cámara nuevamente
   };
 
-  const processPhoto = () => {
-    console.log("Procesando la foto:", capturedImage);
+  const processPhoto = async () => {
+    if (!imageData) {
+      console.error("No hay datos de la imagen para procesar.");
+      return null;
+    }
+
+    try {
+      console.log("Procesando la foto:", imageData);
+
+      // Llamada al API
+      const restOperation = await post({
+        apiName: apiGateway,
+        path: `identity-verify?circuit=${circuit}`, // `circuit` ahora viene como prop
+        options: {
+          body: JSON.stringify(imageData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      });
+
+      // Manejar la respuesta del API
+      const response = await restOperation.response;
+
+      if (response) {
+        if (response.body instanceof ReadableStream) {
+          const responseBody = await readStream(response.body);
+          const responseJson = JSON.parse(responseBody);
+          console.log("-----Respuesta del servidor:", responseJson);
+          return responseJson;
+        }
+      }
+    } catch (error) {
+      console.error(
+        "POST call process circuit error:",
+        error instanceof Error ? error.message : error
+      );
+    }
+
+    // Si no hay respuesta válida, retorna null o un objeto vacío
+    return null;
   };
 
   return (

@@ -19,6 +19,10 @@ export const identityVerifyApi = async (
     const request = {
         doc
     };
+    console.log("-----el t: ", accessToken)
+    console.log('----la url: ', url)
+    console.log('---la imagen:', doc)
+
     const response = await fetch(url, {
         method: 'POST',
         headers: {

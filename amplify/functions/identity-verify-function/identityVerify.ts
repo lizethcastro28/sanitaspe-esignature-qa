@@ -77,7 +77,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
         if (!circuit) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ message: 'El parámetro circuit es obligatorio.' }),
+                body: JSON.stringify({ message: 'El parámetro chanel es obligatorio.' }),
                 headers: {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Headers": "*",
@@ -98,6 +98,8 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
         const finalUrl = identity_verify_url.replace("{circuit}", circuit);
 
         const data = await identityVerifyApi(finalUrl, accessToken, body);
+
+        console.log('--------------respuesta: ', data)
 
         return {
             statusCode: 200,

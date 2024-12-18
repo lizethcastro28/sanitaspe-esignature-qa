@@ -249,7 +249,7 @@ const App = () => {
             )}
 
             {isRekognition && (
-              <Camera docType='DNI'/>
+              <Camera docType='DNI' circuit='{circuit}'/>
             )}
 
             {showBody && (
