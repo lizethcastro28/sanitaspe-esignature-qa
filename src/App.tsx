@@ -134,7 +134,7 @@ const App = () => {
           //Verifico si debo Firmar
           let { idStatus, isRekognition } = biometricHistory;
 
-          if (idStatus === 1 && isRekognition === false) {
+          if (idStatus === 1 && isRekognition === true) {
             //subir el DNI
             setIsRekognition(true);
 
