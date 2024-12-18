@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { post } from "aws-amplify/data";
 import Webcam from "react-webcam";
-//import { readStream } from "../utils/functions";
+import { readStream } from "../utils/functions";
 
 interface CameraProps {
   docType: string; // Tipo de documento (e.g., DNI, Pasaporte)
@@ -60,6 +60,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
     try {
       console.log("------Procesando la foto:", imageData);
+      console.log("------Procesando circuit:", circuit);
 
       // Llamada al API
       const restOperation = await post({

@@ -6,6 +6,9 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
     // Obtener el circuito desde los parámetros de consulta
     const circuit = event.queryStringParameters?.circuit;
 
+    console.log('--->>>>el evento:', event)
+    console.log('--->>>>el circuit:', circuit)
+
     // Verifica si el cuerpo está presente
     if (!event.body) {
         return {
@@ -40,7 +43,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
     if (!name || !size || !content) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Faltan propiedades en el cuerpo de la solicitud identify.' }),
+            body: JSON.stringify({ message: 'Faltan propiedades en el cuerpo de la solicitud identify.', body }),
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "*",
