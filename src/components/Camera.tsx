@@ -60,12 +60,12 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
     try {
       console.log("------Procesando la foto:", imageData);
-      console.log("------Procesando circuit:", circuit);
+      console.log("Props recibidas:", { docType, circuit });
 
       // Llamada al API
       const restOperation = await post({
         apiName: apiGateway,
-        path: `identity`,
+        path: `identity?circuit=${circuit}`,
         options: {
           body: JSON.stringify(imageData),
           headers: {
