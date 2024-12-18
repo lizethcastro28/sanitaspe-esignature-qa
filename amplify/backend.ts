@@ -91,7 +91,6 @@ configPath.addProxy({
 });
 
 // ==============Create resource identityVerify============
-// create a new Lambda integration
 const lambdaIdentityVerifyIntegration = new LambdaIntegration(
   backend.identityVerifyFunction.resources.lambda
 );

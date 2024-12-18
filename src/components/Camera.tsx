@@ -81,7 +81,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
         if (response.body instanceof ReadableStream) {
           const responseBody = await readStream(response.body);
           const responseJson = JSON.parse(responseBody);
-          console.log("-----Respuesta del servidor:", responseJson);
+          console.log("--------Respuesta del servidor:", responseJson);
           return responseJson;
         }
       }

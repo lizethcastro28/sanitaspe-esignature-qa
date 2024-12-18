@@ -99,7 +99,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
 
         const data = await identityVerifyApi(finalUrl, accessToken, body);
 
-        console.log('--------------respuesta: ', data)
+        console.log('-------------respuesta en servidor: ', data)
 
         return {
             statusCode: 200,
