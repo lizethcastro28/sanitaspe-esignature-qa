@@ -2,7 +2,7 @@ import type { APIGatewayProxyHandler, APIGatewayProxyResult, APIGatewayEvent } f
 import { identityVerify } from './identityVerify';
 
 /**
- * handler: maneja las solicitudes HTTP del recurso /circuit
+ * handler: maneja las solicitudes HTTP del recurso /identity-verify
  * Invoca la función correspondiente al método HTTP invocado
  * @param event 
  * @returns la respuesta de la función invocada.

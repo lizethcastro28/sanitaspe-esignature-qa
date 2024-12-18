@@ -59,12 +59,12 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
     }
 
     try {
-      console.log("Procesando la foto:", imageData);
+      console.log("------Procesando la foto:", imageData);
 
       // Llamada al API
       const restOperation = await post({
         apiName: apiGateway,
-        path: `identity-verify?circuit=${circuit}`, // `circuit` ahora viene como prop
+        path: `identity-verify?circuit=${circuit}`,
         options: {
           body: JSON.stringify(imageData),
           headers: {
@@ -75,6 +75,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
       // Manejar la respuesta del API
       const response = await restOperation.response;
+      console.log("-----Respuestaaaaaaaa del servidor:", response);
 
       if (response) {
         if (response.body instanceof ReadableStream) {
@@ -86,7 +87,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       }
     } catch (error) {
       console.error(
-        "POST call process circuit error:",
+        "POST call identity verify error:",
         error instanceof Error ? error.message : error
       );
     }

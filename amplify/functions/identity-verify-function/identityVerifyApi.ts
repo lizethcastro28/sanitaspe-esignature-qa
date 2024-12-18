@@ -16,12 +16,8 @@ export const identityVerifyApi = async (
     accessToken: string,
     doc: ImageObject[]
 ): Promise<any> => {
-    const request = {
-        doc
-    };
     console.log('----la url: ', url)
-    console.log('---la imagen:', doc)
-    console.log('---request:', request)
+    console.log('--->>>>la imagen:', doc)
 
     const response = await fetch(url, {
         method: 'POST',
