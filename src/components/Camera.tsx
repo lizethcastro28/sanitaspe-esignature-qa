@@ -64,7 +64,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       // Llamada al API
       const restOperation = await post({
         apiName: apiGateway,
-        path: `identity-verify?circuit=${circuit}`,
+        path: `identity?circuit=${circuit}`,
         options: {
           body: JSON.stringify(imageData),
           headers: {

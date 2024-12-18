@@ -96,7 +96,7 @@ const lambdaIdentityVerifyIntegration = new LambdaIntegration(
   backend.identityVerifyFunction.resources.lambda
 );
 // create a new resource path with IAM authorization
-const identityVerifyPath = myRestApi.root.addResource("identity-verify", {
+const identityVerifyPath = myRestApi.root.addResource("identity", {
   defaultMethodOptions: {
     authorizationType: AuthorizationType.IAM,
   },
@@ -177,8 +177,8 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
         `${myRestApi.arnForExecuteApi("*", "/circuit/*", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/upload", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/upload/*", "dev")}`,
-        `${myRestApi.arnForExecuteApi("*", "/identity-verify", "dev")}`,
-        `${myRestApi.arnForExecuteApi("*", "/identity-verify/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/identity", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/identity/*", "dev")}`,
       ],
     })
   ],
