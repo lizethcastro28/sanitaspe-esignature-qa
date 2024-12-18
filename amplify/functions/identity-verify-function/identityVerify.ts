@@ -40,7 +40,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
     if (!name || !size || !content) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Faltan propiedades en el cuerpo de la solicitud.' }),
+            body: JSON.stringify({ message: 'Faltan propiedades en el cuerpo de la solicitud identify.' }),
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "*",

@@ -64,7 +64,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       // Llamada al API
       const restOperation = await post({
         apiName: apiGateway,
-        path: `identity?circuit=${circuit}`,
+        path: `identity`,
         options: {
           body: JSON.stringify(imageData),
           headers: {
@@ -77,15 +77,16 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       const response = await restOperation.response;
       console.log("-----Respuestaaaaaaaa del servidor:", response);
 
-      if (response) {
+      /*if (response) {
         if (response.body instanceof ReadableStream) {
           const responseBody = await readStream(response.body);
           const responseJson = JSON.parse(responseBody);
           console.log("--------Respuesta del servidor:", responseJson);
           return responseJson;
         }
-      }
+      }*/
     } catch (error) {
+      console.log('---------ele error: ', error)
       console.error(
         "POST call identity verify error:",
         error instanceof Error ? error.message : error
