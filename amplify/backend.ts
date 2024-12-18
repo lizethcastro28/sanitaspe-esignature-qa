@@ -33,7 +33,7 @@ const apiStack = backend.createStack("api-stack");
 
 // create a new REST API
 const myRestApi = new RestApi(apiStack, "RestApi", {
-  restApiName: "biometricApi",
+  restApiName: "biometricApiQA",
   deploy: true,
   deployOptions: {
     stageName: "dev",

@@ -37,7 +37,7 @@ interface FooterConfig {
   bgColor: string;
 }
 
-const apiGateway = 'biometricApi'
+const apiGateway = 'biometricApiQA'
 
 const App = () => {
   const [showBody, setShowBody] = useState(false);
@@ -134,7 +134,7 @@ const App = () => {
           //Verifico si debo Firmar
           let { idStatus, isRekognition } = biometricHistory;
 
-          if (idStatus === 1 && isRekognition === true) {
+          if (idStatus === 1 && isRekognition === false) {
             //subir el DNI
             setIsRekognition(true);
 
