@@ -37,7 +37,7 @@ interface FooterConfig {
   bgColor: string;
 }
 
-const apiGateway = 'biometricApiQA'
+const apiGateway = 'biometricApi'
 
 const App = () => {
   const [showBody, setShowBody] = useState(false);
