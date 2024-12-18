@@ -23,6 +23,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       console.error("No se pudo capturar la imagen.");
       return;
     }
+    const cleanedBase64 = imageSrc.split(",")[1];
 
     // Generar nombre del archivo dinámicamente
     const imageName = `${docType}-${Date.now()}.jpg`;
@@ -34,7 +35,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
     const data = {
       name: imageName,
       size: imageSize,
-      content: imageSrc,
+      content: cleanedBase64,
     };
 
     // Guardar el estado

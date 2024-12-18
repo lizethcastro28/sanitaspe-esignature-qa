@@ -19,9 +19,9 @@ export const identityVerifyApi = async (
     const request = {
         doc
     };
-    console.log("-----el t: ", accessToken)
     console.log('----la url: ', url)
     console.log('---la imagen:', doc)
+    console.log('---request:', request)
 
     const response = await fetch(url, {
         method: 'POST',
@@ -29,7 +29,7 @@ export const identityVerifyApi = async (
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request)
+        body: JSON.stringify(doc)
     });
     if (!response.ok) {
         throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}`);
