@@ -37,6 +37,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
         };
     }
 
+    console.log('--->>>>el body2:', body)
     const name = body.name;
     const size = body.size;
     const content = body.content;
