@@ -6,10 +6,6 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
     // Obtener el circuito desde los parámetros de consulta
     const circuit = event.queryStringParameters?.circuit;
 
-    console.log('--->>>>el evento:', event)
-    console.log('--->>>>el circuit:', circuit)
-    console.log('--->>>>el body:', event.body)
-
     // Verifica si el cuerpo está presente
     if (!event.body) {
         return {
@@ -36,15 +32,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
             },
         };
     }
-
-    console.log('--->>>>el body2:', body)
-    const name = body.name;
-    const size = body.size;
-    const content = body.content;
-
-    console.log('--->>>>el name:', name)
-    console.log('--->>>>el size:', size)
-    console.log('--->>>>el content:', content)
+    const { name, size, content } = body;
 
     if (!name || !size || !content) {
         return {

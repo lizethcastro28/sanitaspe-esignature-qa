@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { post } from "aws-amplify/data";
 import Webcam from "react-webcam";
-//import { readStream } from "../utils/functions";
+import { readStream } from "../utils/functions";
 
 interface CameraProps {
   docType: string; // Tipo de documento (e.g., DNI, Pasaporte)
@@ -67,7 +67,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
         apiName: apiGateway,
         path: `identity?circuit=${circuit}`,
         options: {
-          body: JSON.stringify(imageData),
+          body: imageData,
           headers: {
             "Content-Type": "application/json",
           },
@@ -78,14 +78,14 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       const response = await restOperation.response;
       console.log("-----Respuestaaaaaaaa del servidor:", response);
 
-      /*if (response) {
+      if (response) {
         if (response.body instanceof ReadableStream) {
           const responseBody = await readStream(response.body);
           const responseJson = JSON.parse(responseBody);
           console.log("--------Respuesta del servidor:", responseJson);
           return responseJson;
         }
-      }*/
+      }
     } catch (error) {
       console.log('---------ele error: ', error)
       console.error(
