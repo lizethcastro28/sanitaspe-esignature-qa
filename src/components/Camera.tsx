@@ -8,7 +8,7 @@ interface CameraProps {
   circuit: string; // Identificador del circuito para la llamada al API
 }
 
-const apiGateway = "biometricApiQA";
+const apiGateway = "biometricApi";
 
 const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);

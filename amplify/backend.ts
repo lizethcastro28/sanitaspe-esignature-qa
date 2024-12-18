@@ -33,7 +33,7 @@ const apiStack = backend.createStack("api-stack");
 
 // create a new REST API
 const myRestApi = new RestApi(apiStack, "RestApi", {
-  restApiName: "biometricApiQA",
+  restApiName: "biometricApi",
   deploy: true,
   deployOptions: {
     stageName: "dev",
@@ -91,6 +91,7 @@ configPath.addProxy({
 });
 
 // ==============Create resource identityVerify============
+// create a new Lambda integration
 const lambdaIdentityVerifyIntegration = new LambdaIntegration(
   backend.identityVerifyFunction.resources.lambda
 );
