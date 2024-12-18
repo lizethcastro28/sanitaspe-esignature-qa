@@ -8,6 +8,7 @@ export const identityVerify = async (event: APIGatewayEvent): Promise<APIGateway
 
     console.log('--->>>>el evento:', event)
     console.log('--->>>>el circuit:', circuit)
+    console.log('--->>>>el body:', event.body)
 
     // Verifica si el cuerpo está presente
     if (!event.body) {
