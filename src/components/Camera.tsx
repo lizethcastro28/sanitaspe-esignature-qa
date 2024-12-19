@@ -9,6 +9,7 @@ interface CameraProps {
 }
 
 const apiGateway = "biometricApi";
+const hrefPadre = document.referrer;
 
 const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);
@@ -28,7 +29,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
     // Generar nombre del archivo dinámicamente
     const imageName = `${docType}-${Date.now()}.jpg`;
 
-    // Calcular tamaño estimado en bytes (base64 tiene un overhead del 33%)
+    // Calcular tamaño estimado en bytes
     const imageSize = Math.round((imageSrc.length * 3) / 4 - (imageSrc.endsWith("==") ? 2 : 1));
 
     // Crear el objeto con los datos de la imagen
@@ -76,16 +77,37 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
       // Manejar la respuesta del API
       const response = await restOperation.response;
-      console.log("-----Respuestaaaaaaaa del servidor:", response);
 
       if (response) {
+        // Verifica si la respuesta tiene un cuerpo como ReadableStream
         if (response.body instanceof ReadableStream) {
-          const responseBody = await readStream(response.body);
-          const responseJson = JSON.parse(responseBody);
-          console.log("--------Respuesta del servidor:", responseJson);
-          return responseJson;
+          try {
+            // Leer el cuerpo del stream
+            const responseBody = await readStream(response.body);
+
+            // Parsear el JSON de la respuesta
+            const responseJson = JSON.parse(responseBody);
+
+            console.log("-------- Respuesta del servidor:", responseJson);
+
+            // Verificar si es válido
+            if (responseJson.isValid) {
+              // Redirige a la página padre
+              window.location.href = hrefPadre; 
+            } else {
+              // Permanece en la página actual
+              console.log("Respuesta inválida, permaneciendo en la página actual.");
+            }
+          } catch (error) {
+            console.error("Error al procesar la respuesta del servidor:", error);
+          }
+        } else {
+          console.error("El cuerpo de la respuesta no es un ReadableStream.");
         }
+      } else {
+        console.error("La respuesta no está definida.");
       }
+
     } catch (error) {
       console.log('---------ele error: ', error)
       console.error(

@@ -174,6 +174,7 @@ const App = () => {
         }
       }
     } catch (error) {
+      console.log('----------------ERROR: ', error)
       console.error('GET call config error:', error instanceof Error ? error.message : error);
       setHasError(true); // Cambiar a la página de error
     }
