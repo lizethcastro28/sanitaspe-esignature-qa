@@ -11,13 +11,15 @@ interface CameraProps {
 const apiGateway = "biometricApi";
 const hrefPadre = document.referrer;
 const msgInicial = "Sube tu DNI";
-const msgError = "DNI inválido, vuelve a intentarlo";
+const msgErrorDNI = "DNI inválido, vuelve a intentarlo";
 const msgCapture = "Imagen capturada. Listo para procesar.";
+const msgError = "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente";
 
 const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState<boolean>(true); const [message, setMessage] = useState<string>(msgInicial);
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true); 
+  const [message, setMessage] = useState<string>(msgInicial);
   const [isProcessing, setIsProcessing] = useState<boolean>(false); // Estado para evitar procesamiento mientras se captura
 
   const captureAndProcessPhoto = async () => {
@@ -68,6 +70,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
         },
       });
 
+      console.log('-----la data  que va a verify: ', data);
       const response = await restOperation.response;
 
       if (response) {
@@ -86,17 +89,23 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
               window.location.href = hrefPadre;
             } else {
               // Si la respuesta es falsa, mostrar mensaje y permitir tomar otra foto
-              setMessage(msgError);
+              setMessage(msgErrorDNI);
               setIsCameraActive(true); // Vuelve a activar la cámara
             }
           } catch (error) {
             console.error("Error al procesar la respuesta del servidor:", error);
+            setMessage(msgError); // Mostrar mensaje de error si no se puede procesar la respuesta
+            setIsCameraActive(true); // Volver a activar la cámara
           }
         } else {
           console.error("El cuerpo de la respuesta no es un ReadableStream.");
+          setMessage(msgError); // Mostrar mensaje de error si no se recibe el stream esperado
+          setIsCameraActive(true); // Volver a activar la cámara
         }
       } else {
         console.error("La respuesta no está definida.");
+        setMessage(msgError); // Mostrar mensaje de error si la respuesta no es válida
+        setIsCameraActive(true); // Volver a activar la cámara
       }
 
     } catch (error) {
@@ -104,6 +113,8 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
         "POST call identity verify error:",
         error instanceof Error ? error.message : error
       );
+      setMessage(msgError); // Mostrar mensaje de error en caso de fallo en la llamada al API
+      setIsCameraActive(true); // Volver a activar la cámara
     } finally {
       setIsProcessing(false); // Detener procesamiento
     }
