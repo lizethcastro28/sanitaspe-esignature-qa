@@ -10,20 +10,30 @@ interface CameraProps {
 
 const apiGateway = "biometricApi";
 const hrefPadre = document.referrer;
+const msgInicial = "Sube tu DNI";
+const msgError = "DNI inválido, vuelve a intentarlo";
+const msgCapture = "Imagen capturada. Listo para procesar.";
 
 const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
-  const [imageData, setImageData] = useState<{ name: string; size: number; content: string } | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true); const [message, setMessage] = useState<string>(msgInicial);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false); // Estado para evitar procesamiento mientras se captura
 
-  const capturePhoto = async () => {
+  const captureAndProcessPhoto = async () => {
+    if (isProcessing) return; // Prevenir múltiples llamadas mientras se procesa
+
+    setIsProcessing(true); // Iniciar el procesamiento
+
+    // Capturar la foto
     const imageSrc = webcamRef.current?.getScreenshot();
 
     if (!imageSrc) {
       console.error("No se pudo capturar la imagen.");
+      setIsProcessing(false); // Detener procesamiento en caso de error
       return;
     }
+
     const cleanedBase64 = imageSrc.split(",")[1];
 
     // Generar nombre del archivo dinámicamente
@@ -41,41 +51,23 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
     // Guardar el estado
     setCapturedImage(imageSrc);
-    setImageData(data);
     setIsCameraActive(false); // Ocultar la cámara
+    setMessage(msgCapture);
 
-    console.log("Objeto data:", data);
-  };
-
-  const retakePhoto = () => {
-    setCapturedImage(null);
-    setImageData(null);
-    setIsCameraActive(true); // Mostrar la cámara nuevamente
-  };
-
-  const processPhoto = async () => {
-    if (!imageData) {
-      console.error("No hay datos de la imagen para procesar.");
-      return null;
-    }
-
+    // Enviar la foto al API externo
     try {
-      console.log("------Procesando la foto:", imageData);
-      console.log("Props recibidas:", { docType, circuit });
-
       // Llamada al API
       const restOperation = await post({
         apiName: apiGateway,
         path: `identity?circuit=${circuit}`,
         options: {
-          body: imageData,
+          body: data,
           headers: {
             "Content-Type": "application/json",
           },
         },
       });
 
-      // Manejar la respuesta del API
       const response = await restOperation.response;
 
       if (response) {
@@ -88,15 +80,14 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
             // Parsear el JSON de la respuesta
             const responseJson = JSON.parse(responseBody);
 
-            console.log("-------- Respuesta del servidor:", responseJson);
-
             // Verificar si es válido
             if (responseJson.isValid) {
               // Redirige a la página padre
-              window.location.href = hrefPadre; 
+              window.location.href = hrefPadre;
             } else {
-              // Permanece en la página actual
-              console.log("Respuesta inválida, permaneciendo en la página actual.");
+              // Si la respuesta es falsa, mostrar mensaje y permitir tomar otra foto
+              setMessage(msgError);
+              setIsCameraActive(true); // Vuelve a activar la cámara
             }
           } catch (error) {
             console.error("Error al procesar la respuesta del servidor:", error);
@@ -109,25 +100,27 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       }
 
     } catch (error) {
-      console.log('---------ele error: ', error)
       console.error(
         "POST call identity verify error:",
         error instanceof Error ? error.message : error
       );
+    } finally {
+      setIsProcessing(false); // Detener procesamiento
     }
-
-    // Si no hay respuesta válida, retorna null o un objeto vacío
-    return null;
   };
 
   return (
     <div style={{ textAlign: "center" }}>
+      <h3>{message}</h3>
+
       {/* Mostrar cámara o imagen capturada */}
       {isCameraActive ? (
         <div>
-          {/* Botón encima del Webcam */}
+          {/* Botón que captura la foto y procesa */}
           <div style={{ marginBottom: "10px" }}>
-            <button onClick={capturePhoto}>Capturar</button>
+            <button onClick={captureAndProcessPhoto} disabled={isProcessing}>
+              {isProcessing ? "Procesando..." : "Procesar"}
+            </button>
           </div>
 
           {/* Componente Webcam */}
@@ -140,21 +133,7 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       ) : (
         <div>
           {/* Mostrar imagen capturada */}
-          <h3>Tu {docType}</h3>
           <img src={capturedImage!} alt="Imagen Capturada" style={{ maxWidth: "100%", height: "auto", margin: "0 auto" }} />
-
-          {/* Botones para procesar o volver a tomar */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "20px",
-              marginTop: "15px",
-            }}
-          >
-            <button onClick={retakePhoto}>Volver a tomar</button>
-            <button onClick={processPhoto}>Procesar</button>
-          </div>
         </div>
       )}
     </div>

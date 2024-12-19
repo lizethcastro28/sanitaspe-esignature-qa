@@ -7,9 +7,10 @@ import Footer from './components/Footer';
 import ErrorContent from './components/ErrorContent';
 import { readStream, fillPdfDocuments } from './utils/functions';
 
-import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import Camera from './components/Camera';
+import DocumentViewer from './components/DocumentViewer';
+
 
 type LocationType = 'left' | 'center' | 'right';
 type InstructionsLocationType = 'left' | 'right';
@@ -44,9 +45,9 @@ const App = () => {
   const [name, setName] = useState("");
   const [pdfDocuments, setPdfDocuments] = useState<PdfDocument[]>([]);
   const [screen, setScreen] = useState<"error" | "loading" | "detector" | "success" | "notLive" | "dataError" | "cancelled" | "dataDocument">("loading");
-  const [status, setStatus] = useState(false);
+  const [idStatus, setIdStatus] = useState(1);
   const [circuit, setCircuit] = useState("");
-  const [detalleFirma, setDetalleFirma] = useState("tus documentos ya fueron firmados");
+  const [detalleFirma, setDetalleFirma] = useState("");
   const [isRekognition, setIsRekognition] = useState(false);
 
 
@@ -133,23 +134,15 @@ const App = () => {
           setName(biometricHistory.signers?.[0]?.name ?? "");
           //Verifico si debo Firmar
           let { idStatus, isRekognition } = biometricHistory;
-
-          if (idStatus === 1 && isRekognition === true) {
-            //subir el DNI
-            setIsRekognition(true);
-
-            //si true, firmar
-            //setStatus(true);
-            setDetalleFirma("envíanos la foto de tu DNI");
+          console.log('-----------REKOGNITION:', isRekognition);
+          setIdStatus(idStatus);
+          if (idStatus === 1) {
+            if (isRekognition === true) {
+              //subir el DNI
+              setIsRekognition(true);
+              setDetalleFirma("");
+            }
           }
-
-          //Si ya tiene DNI
-          if (idStatus === 1 && isRekognition === false) {
-            //solo firmo
-            setStatus(true);
-            setDetalleFirma("estos son tus documentos");
-          }
-
           setHeaderConfig({
             content: configPage.header?.content || '',
             url: configPage.header?.url || './logowhite.png',
@@ -174,7 +167,6 @@ const App = () => {
         }
       }
     } catch (error) {
-      console.log('----------------ERROR: ', error)
       console.error('GET call config error:', error instanceof Error ? error.message : error);
       setHasError(true); // Cambiar a la página de error
     }
@@ -214,45 +206,33 @@ const App = () => {
           <div className="container">
             {!showBody && (
               <>
+                {/* Botón Firmar */}
                 <div className="flex items-center justify-between mt-4">
-                  <h2 className="">{name}: {detalleFirma}</h2>
-                  {status && (
+                  <h2 className="">{name} {detalleFirma}</h2>
+                  {(idStatus === 1 || idStatus === 3) && !isRekognition && (
                     <button onClick={handleClick} className="mb-4 ml-4 px-4 py-2 bg-blue-500 text-white rounded">
                       Firmar
                     </button>
                   )}
                 </div>
 
+                {/* Documentos */}
                 <div className="mb-8">
-                  {/* Filtrar para mostrar solo el PDF que contiene "circuit" si el estado es false */}
-                  {status === false
-                    ? pdfDocuments
-                      .filter(doc => doc.name.includes(circuit))
-                      .map((doc, index) => (
-                        <div key={index} className="mb-4">
-                          <h4 className="text-md font-semibold mb-1 text-gray-600">{doc.name}</h4>
-                          <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-                            <Viewer fileUrl={doc.url ? doc.url : `data:application/pdf;base64,${doc.content}`} />
-                          </Worker>
-                        </div>
-                      ))
-                    : pdfDocuments.map((doc, index) => (
-                      <div key={index} className="mb-4">
-                        <h4 className="text-md font-semibold mb-1 text-gray-600">{doc.name}</h4>
-                        <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-                          <Viewer fileUrl={doc.url ? doc.url : `data:application/pdf;base64,${doc.content}`} />
-                        </Worker>
-                      </div>
-                    ))}
+                  <DocumentViewer
+                    pdfDocuments={pdfDocuments}
+                    idStatus={idStatus}
+                    isRekognition={isRekognition}
+                  />
                 </div>
-
               </>
             )}
 
-            {isRekognition && (
-              <Camera docType='DNI' circuit={circuit}/>
+            {/* Cámara */}
+            {idStatus === 1 && isRekognition && (
+              <Camera docType="DNI" circuit={circuit} />
             )}
 
+            {/* Body */}
             {showBody && (
               <Body
                 instructions={bodyConfig.instructions}
@@ -260,6 +240,7 @@ const App = () => {
               />
             )}
           </div>
+
           <Footer
             content={footerConfig.content}
             bgColor={footerConfig.bgColor}
