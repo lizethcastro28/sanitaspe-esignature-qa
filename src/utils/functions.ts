@@ -1,7 +1,7 @@
 // utils/apiService.ts
 import { post } from 'aws-amplify/data';
 
-const apiGateway = 'biometricApi';
+const apiGateway = import.meta.env.VITE_API_GATEWAY;
 
 export async function readStream(stream: ReadableStream<Uint8Array>): Promise<string> {
   const reader = stream.getReader();

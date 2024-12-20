@@ -13,7 +13,7 @@ interface BodyProps {
     instructions_location: 'left' | 'right';
 }
 
-const apiGateway = 'biometricApi'
+const apiGateway = import.meta.env.VITE_API_GATEWAY;
 
 const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const [loading, setLoading] = useState<boolean>(true);

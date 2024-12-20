@@ -8,7 +8,7 @@ interface CameraProps {
   circuit: string; // Identificador del circuito para la llamada al API
 }
 
-const apiGateway = "biometricApi";
+const apiGateway = import.meta.env.VITE_API_GATEWAY;
 const hrefPadre = document.referrer;
 const msgInicial = "Sube tu DNI";
 const msgErrorDNI = "DNI inválido, vuelve a intentarlo";
