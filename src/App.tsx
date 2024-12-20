@@ -10,6 +10,7 @@ import { readStream, fillPdfDocuments } from './utils/functions';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import Camera from './components/Camera';
 import DocumentViewer from './components/DocumentViewer';
+import { Messages } from './constants/messages';
 
 
 type LocationType = 'left' | 'center' | 'right';
@@ -157,7 +158,7 @@ const App = () => {
           });
 
           setFooterConfig({
-            content: configPage.footer?.content || 'DANAconnect Corp. Todos los derechos reservados.',
+            content: configPage.footer?.content || Messages.footer.defaultContent,
             location: configPage.footer?.location || 'center',
             bgColor: configPage.footer?.bgColor || '#EA6A30',
           });
@@ -190,9 +191,9 @@ const App = () => {
       ) : hasError ? (
         <div>
           <ErrorContent
-            title="Error en Información"
-            description="Se ha producido un error al cargar la información de la solicitud."
-            instructions="Vuelva a abrir el email original que le enviamos y haga clic en el enlace."
+            title={Messages.dataError.title}
+            description={Messages.dataError.description}
+            instructions={Messages.dataError.instructions}
             visible={false}
           />
         </div>

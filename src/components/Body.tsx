@@ -7,6 +7,7 @@ import '../App.css';
 import { dictionary } from './dictionary';
 import ErrorContent from './ErrorContent';
 import { Alert } from '@aws-amplify/ui-react';
+import { Messages } from '../constants/messages';
 
 interface BodyProps {
     instructions: string;
@@ -390,30 +391,30 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         </>
                     ) : screen === 'notLive' ? (
                         <ErrorContent
-                            title="No es una persona"
-                            description="La cámara no reconoce una persona. Es posible que no hayas seguido las instrucciones."
-                            instructions="Por favor, regresa, ponte de frente a la cámara y sigue las instrucciones."
+                            title={Messages.notLive.title}
+                            description={Messages.notLive.title}
+                            instructions={Messages.notLive.title}
                             visible={true}
                         />
                     ) : screen === 'dataError' ? (
                         <ErrorContent
-                            title="Error en Información"
-                            description="Se ha producido un error al cargar la información de su cuenta."
-                            instructions="Vuelva a abrir el email original que le enviamos y haga clic en el enlace para generar el token nuevamente."
+                            title={Messages.dataError.title}
+                            description={Messages.dataError.title}
+                            instructions={Messages.dataError.title}
                             visible={false}
                         />
                     ) : screen === 'cancelled' ? (
                         <ErrorContent
-                            title="Acción cancelada por el Usuario"
-                            description="Puedes volver a intentarlo."
-                            instructions=""
+                        title={Messages.cancelledAction.title}
+                        description={Messages.cancelledAction.description}
+                        instructions={Messages.cancelledAction.instructions}
                             visible={true}
                         />
                     ) : (
                         <ErrorContent
-                            title="Error inesperado"
-                            description="Intenta de nuevo."
-                            instructions="Refresca la página o contacta con soporte técnico."
+                            title={Messages.unexpectedError.title}
+                            description={Messages.unexpectedError.description}
+                            instructions={Messages.unexpectedError.instructions}
                             visible={false}
                         />
                     )}
