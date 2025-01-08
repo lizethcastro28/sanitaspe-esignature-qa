@@ -65,7 +65,7 @@ const App = () => {
   });
 
   const [footerConfig, setFooterConfig] = useState<FooterConfig>({
-    content: 'DANAconnect Corp. Todos los derechos reservados.',
+    content: Messages.footer.defaultContent,
     location: 'center',
     bgColor: '#EA6A30',
   });

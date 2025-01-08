@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import { Messages } from '../constants/messages';
 
 interface Document {
   name: string; // Nombre del documento
@@ -14,20 +15,17 @@ interface DocumentViewerProps {
   isRekognition: boolean;
 }
 
-const msgFirmados = "Estos son tus documentos firmados";
-const msgNoFirmados = "Por favor Firma estos documentos";
-
 const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus, isRekognition }) => {
-  const [message, setMessage] = useState<string>(msgFirmados);
+  const [message, setMessage] = useState<string>(Messages.docs.signed);
 
   // Usamos useEffect para actualizar el mensaje cuando idStatus cambie
   useEffect(() => {
     if (isRekognition) return;
 
     if (idStatus === 1 || idStatus === 3) {
-      setMessage(msgNoFirmados);
+      setMessage(Messages.docs.unsigned);
     } else {
-      setMessage(msgFirmados);
+      setMessage(Messages.docs.signed);
     }
   }, [idStatus, isRekognition]); // Dependencias: solo se actualiza cuando idStatus o isRekognition cambian
 

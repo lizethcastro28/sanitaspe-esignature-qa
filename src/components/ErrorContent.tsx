@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@aws-amplify/ui-react'; 
+import { Messages } from '../constants/messages';
 
 
 interface AlertComponentProps {
@@ -20,7 +21,7 @@ const ErrorContent: React.FC<AlertComponentProps> = ({ title, description, instr
           className="custom-button"
           onClick={() => window.location.reload()}
         >
-          Regresar
+          {Messages.buttons.back}
         </Button>
       )}
     </div>

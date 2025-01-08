@@ -313,12 +313,12 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                 // Maneja el cuerpo de la respuesta de error si es posible
                 const errorBody = await response.body.json();
                 console.error('Detalles del error: ', errorBody);
-                throw new Error('Error al subir el video'); // Throw a specific error
+                throw new Error('Error al subir el video');
             }
 
         } catch (error) {
             console.error('Error en uploadVideo:', error);
-            throw error; // Re-lanza el error para manejo posterior si es necesario
+            throw error;
         }
     };
 
@@ -379,16 +379,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                                 }}
                             />
                         </div>
-                    ) : screen === 'success' ? (
-                        <>
-                            <ErrorContent
-                                title="Verificación exitosa"
-                                description="Llamo a la API"
-                                instructions=""
-                                visible={false}
-                            />
-
-                        </>
                     ) : screen === 'notLive' ? (
                         <ErrorContent
                             title={Messages.notLive.title}

@@ -28,6 +28,19 @@ export const Messages = {
     },
     footer: {
         defaultContent: "DANAconnect Corp. Todos los derechos reservados.",
+    },
+    docs: {
+        signed: "Estos son tus documentos firmados",
+        unsigned: "Por favor Firma estos documentos"
+    },
+    buttons: {
+        back: "Regresar",
+    },
+    camera: {
+        upload: "Sube tu DNI",
+        dniError: "DNI inválido, vuelve a intentarlo",
+        successCapture: "Imagen capturada. Listo para procesar.",
+        requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente"
     }
-    
+
 };
