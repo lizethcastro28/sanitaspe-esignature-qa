@@ -60,7 +60,6 @@ const App = () => {
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("");
   const [isRekognition, setIsRekognition] = useState(false);
-  const { tokens } = useTheme();
 
 
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
