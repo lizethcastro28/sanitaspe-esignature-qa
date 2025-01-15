@@ -13,7 +13,6 @@ import DocumentViewer from './components/DocumentViewer';
 import { Messages } from './constants/messages';
 import {
   Loader,
-  useTheme,
   Text,
   View,
   Flex,
