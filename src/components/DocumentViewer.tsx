@@ -3,6 +3,15 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Messages } from '../constants/messages';
 
+import {
+  Button,
+  ThemeProvider,
+  View,
+  Heading,
+  Message,
+  Flex,
+} from '@aws-amplify/ui-react';
+
 interface Document {
   name: string; // Nombre del documento
   url?: string; // URL opcional del documento
@@ -35,10 +44,15 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus,
 
   return (
     <div className="mb-8">
-      <h3>{message}</h3>
+      <Heading level={4} style={{ marginBottom: '1rem', marginTop: '2rem' }}>
+        <Message colorTheme="info">{message}</Message>
+      </Heading>
+
       {filteredDocuments.map((doc, index) => (
         <div key={index} className="mb-4">
-          <h4 className="text-md font-semibold mb-1 text-gray-600">{doc.name}</h4>
+          <Heading level={5} style={{ marginBottom: '1rem', marginTop: '3rem', textAlign: 'left' }}>
+            {doc.name}
+          </Heading>
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
             <Viewer fileUrl={doc.url ? doc.url : `data:application/pdf;base64,${doc.content}`} />
           </Worker>

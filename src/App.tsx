@@ -11,6 +11,15 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import Camera from './components/Camera';
 import DocumentViewer from './components/DocumentViewer';
 import { Messages } from './constants/messages';
+import {
+  Loader,
+  useTheme,
+  Text,
+  View,
+  Flex,
+  Heading,
+  Button
+} from "@aws-amplify/ui-react";
 
 
 type LocationType = 'left' | 'center' | 'right';
@@ -51,6 +60,7 @@ const App = () => {
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("");
   const [isRekognition, setIsRekognition] = useState(false);
+  const { tokens } = useTheme();
 
 
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
@@ -184,19 +194,24 @@ const App = () => {
   return (
     <>
       {isLoading ? (
-        <div className="loading-container flex justify-center items-center min-h-screen">
-          <img src="/spinner.gif" alt="Cargando..." style={{ width: '400px', height: '400px' }} />
-        </div>
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+          <Flex direction="column" alignItems="center">
+            <Text>{Messages.accions.loading}</Text>
+            <Loader
+              size="large"
+              variation="linear"
+            />
+          </Flex>
+        </View>
 
       ) : hasError ? (
-        <div>
-          <ErrorContent
-            title={Messages.dataError.title}
-            description={Messages.dataError.description}
-            instructions={Messages.dataError.instructions}
-            visible={false}
-          />
-        </div>
+        <ErrorContent
+          title={Messages.dataError.title}
+          description={Messages.dataError.description}
+          instructions={Messages.dataError.instructions}
+          visible={false}
+          type="error"
+        />
       ) : (
         <>
           <Header
@@ -209,14 +224,20 @@ const App = () => {
             {!showBody && (
               <>
                 {/* Botón Firmar */}
-                <div className="flex items-center justify-between mt-4">
-                  <h2 className="">{name} {detalleFirma}</h2>
+                <View style={{ marginTop: 20 }}>
+                  <Heading level={2}>{name} {detalleFirma}</Heading>
                   {(idStatus === 1 || idStatus === 3) && !isRekognition && (
-                    <button onClick={handleClick} className="mb-4 ml-4 px-4 py-2 bg-blue-500 text-white rounded">
-                      Firmar
-                    </button>
+                    <Button
+                    style={{ marginTop: 20 }}
+                      variation="primary"
+                      onClick={handleClick}
+                      size='large'
+                      
+                    >
+                      {Messages.buttons.sing}
+                    </Button>
                   )}
-                </div>
+                </View>
 
                 {/* Documentos */}
                 <div className="mb-8">

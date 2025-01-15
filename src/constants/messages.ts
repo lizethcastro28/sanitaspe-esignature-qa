@@ -7,7 +7,7 @@ export const Messages = {
         instructions: "Refresca la página o contacta con soporte técnico.",
     },
     cancelledAction: {
-        title: "Acción cancelada por el Usuario",
+        title: "Acción cancelada",
         description: "Puedes volver a intentarlo.",
         instructions: "",
     },
@@ -35,12 +35,19 @@ export const Messages = {
     },
     buttons: {
         back: "Regresar",
+        process: "Procesando...",
+        manualProcess:"Capturar manualmente",
+        sing: "Firmar"
     },
     camera: {
         upload: "Sube tu DNI",
         dniError: "DNI inválido, vuelve a intentarlo",
-        successCapture: "Imagen capturada. Listo para procesar.",
-        requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente"
+        successCapture: "Imagen capturada.",
+        requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente",
+        capture:"Capturando en "
+    },
+    accions: {
+        loading: "Cargando..."
     }
 
 };

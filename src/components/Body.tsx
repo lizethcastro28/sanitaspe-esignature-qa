@@ -382,9 +382,10 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                     ) : screen === 'notLive' ? (
                         <ErrorContent
                             title={Messages.notLive.title}
-                            description={Messages.notLive.title}
-                            instructions={Messages.notLive.title}
+                            description={Messages.notLive.description}
+                            instructions={Messages.notLive.instructions}
                             visible={true}
+                            type="error"
                         />
                     ) : screen === 'dataError' ? (
                         <ErrorContent
@@ -392,6 +393,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.dataError.title}
                             instructions={Messages.dataError.title}
                             visible={false}
+                            type="error"
                         />
                     ) : screen === 'cancelled' ? (
                         <ErrorContent
@@ -399,6 +401,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         description={Messages.cancelledAction.description}
                         instructions={Messages.cancelledAction.instructions}
                             visible={true}
+                            type="error"
                         />
                     ) : (
                         <ErrorContent
@@ -406,6 +409,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.unexpectedError.description}
                             instructions={Messages.unexpectedError.instructions}
                             visible={false}
+                            type="error"
                         />
                     )}
                 </div>

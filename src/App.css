@@ -100,3 +100,16 @@
   object-fit: cover;
   border-radius: 8px;
 }
+
+/* Override CSS variables */
+[data-amplify-theme] {
+  --amplify-components-message-filled-background-color: var(--amplify-colors-purple-10);
+  --amplify-components-message-heading-font-size: var(--amplify-font-sizes-xl);
+}
+/* Or target class names */
+.amplify-message {
+  background-color: var(--amplify-colors-purple-10);
+}
+.amplify-message__heading {
+  font-size: var(--amplify-font-sizes-xl);
+}
