@@ -4,12 +4,8 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Messages } from '../constants/messages';
 
 import {
-  Button,
-  ThemeProvider,
-  View,
   Heading,
   Message,
-  Flex,
 } from '@aws-amplify/ui-react';
 
 interface Document {
