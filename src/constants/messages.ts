@@ -45,7 +45,7 @@ export const Messages = {
         successCapture: "Imagen capturada.",
         requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente",
         capture: "Capturando en ",
-        reintent: "Se han realizado 2 capturas. ¿Deseas intentarlo nuevamente?"
+        reintent: "Se han realizado 2 capturas con un DNI inválido. ¿Deseas intentarlo nuevamente?"
     },
     accions: {
         loading: "Cargando..."
