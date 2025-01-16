@@ -2,6 +2,7 @@
 
 ### Descripción del Proyecto
 Este proyecto contiene el código de la aplicación Sanitaspe-eSignature.
+Una aplicación fullstack Amplify, en cuyo backend se consumen las APIs de AWS y biometric necesarias. El frontend desarrollado en Reactjs con typeScript, utilizando los componentes de AmplifyUI como el Liveness detector.
 
 ### Configuración del Entorno
 #### Requisitos Previos
@@ -46,18 +47,17 @@ Este proyecto contiene el código de la aplicación Sanitaspe-eSignature.
    * Selecciona el repositorio y la rama `main` (o la rama que deseas desplegar).
 3. **Configurar la aplicación:**
    * Sigue las instrucciones del asistente para configurar la aplicación.
+   * En la sección Auto-detected frameworks: dejar todo por defecto
    * **Importante:** Asegúrate de que los permisos de IAM estén configurados correctamente para que Amplify pueda acceder a los recursos necesarios.
 4. **Implementar:**
    * Haz clic en "Save and Deploy" para iniciar la implementación.
+   * Esperar a que el proceso termine, y la aplicación se cree. (Tiempo estimado 5 min)
 
 ### Ver la Aplicación Implementada
 Una vez que la implementación se haya completado, podrás acceder a tu aplicación en Amplify -> MyApp -> Domain.
 
 ### Consideraciones Adicionales
-* **Errores:** Si encuentras algún error durante el proceso, revisa la pila de CloudFormation en AWS para obtener más detalles.
-* **Personalización:** Puedes personalizar este README agregando más detalles sobre tu proyecto, como tecnologías utilizadas, configuración específica, etc.
-
-**Este README te proporciona una guía básica para implementar tu aplicación en AWS Amplify. Asegúrate de adaptar los pasos a las características específicas de tu proyecto.**
+* **Errores:** Si encuentras algún error durante el proceso, revisa la pila de CloudFormation en AWS para obtener más detalles. Por lo general son errores de permisos IAM. Una vez resuelto, elimina la Pila y vuelve a ejecutar el proceso anterior.
 
 **¿Necesitas más detalles sobre alguna parte del proceso?**
 ## Deploying to AWS
