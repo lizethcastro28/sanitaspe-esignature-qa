@@ -30,7 +30,8 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
   const [message, setMessage] = useState<string>(Messages.camera.upload);
   const [colorTheme, setColorTheme] = useState<MessageColorTheme>("info");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [secondsElapsed, setSecondsElapsed] = useState<number>(0); // Segundos transcurridos
+  const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
+  const [captureCount, setCaptureCount] = useState<number>(0);
 
   const captureAndProcessPhoto = async () => {
     if (isProcessing) return;
@@ -40,11 +41,11 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (!imageSrc) {
       console.error("No se pudo capturar la imagen.");
+      setMessage("Error: No se pudo capturar la imagen.");
       setIsProcessing(false);
       return;
     }
 
-    //const cleanedBase64 = imageSrc.split(",")[1];
     const cleanedBase64 = imageSrc.substring(imageSrc.indexOf(",") + 1);
     const imageName = `${docType}-${Date.now()}.jpg`;
     const imageSize = Math.round((imageSrc.length * 3) / 4 - (imageSrc.endsWith("==") ? 2 : 1));
@@ -54,11 +55,6 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       size: imageSize,
       content: cleanedBase64,
     };
-
-    setCapturedImage(imageSrc);
-    setIsCameraActive(false);
-    setMessage(Messages.camera.successCapture);
-    setColorTheme("success");
 
     try {
       const restOperation = await post({
@@ -75,64 +71,63 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
       const response = await restOperation.response;
 
       if (response?.body instanceof ReadableStream) {
-        try {
-          const responseBody = await readStream(response.body);
-          const responseJson = JSON.parse(responseBody);
+        const responseBody = await readStream(response.body);
+        const responseJson = JSON.parse(responseBody);
 
-          if (responseJson.isValid) {
-            window.location.href = hrefPadre;
-          } else {
-            setMessage(Messages.camera.dniError);
-            setIsCameraActive(true);
-            setColorTheme("error");
-          }
-        } catch (error) {
-          console.error("Error al procesar la respuesta del servidor:", error);
-          setMessage(Messages.camera.requestError);
-          setIsCameraActive(true);
+        if (responseJson.isValid) {
+          // Redirigir inmediatamente si es válido
+          window.location.href = hrefPadre;
+          return; // Detener el proceso
+        } else {
+          setMessage(Messages.camera.dniError);
           setColorTheme("error");
         }
       } else {
         console.error("El cuerpo de la respuesta no es un ReadableStream.");
         setMessage(Messages.camera.requestError);
-        setIsCameraActive(true);
         setColorTheme("error");
       }
     } catch (error) {
-      console.error(
-        "POST call identity verify error:",
-        error instanceof Error ? error.message : error
-      );
+      console.error("Error al realizar la llamada API:", error);
       setMessage(Messages.camera.requestError);
-      setIsCameraActive(true);
       setColorTheme("error");
     } finally {
       setIsProcessing(false);
+      setCaptureCount((prev) => prev + 1); // Incrementar el contador de capturas
+
+      if (captureCount + 1 >= 2) {
+        setIsCameraActive(false); // Desactivar cámara tras 2 capturas
+      }
     }
   };
 
   useEffect(() => {
-    if (isCameraActive) {
+    if (isCameraActive && captureCount < 2) {
       let seconds = 0;
-
-      // Temporizador para actualizar los segundos transcurridos
       const interval = setInterval(() => {
         seconds += 1;
         setSecondsElapsed(seconds);
 
         if (seconds >= 5) {
           clearInterval(interval);
-          captureAndProcessPhoto(); // Captura automática al completar los 5 segundos
+          captureAndProcessPhoto();
         }
-      }, 1000); // Avanza cada segundo
+      }, 1000);
 
-      return () => clearInterval(interval); // Limpiar temporizador
+      return () => clearInterval(interval);
     }
-  }, [isCameraActive]);
+  }, [isCameraActive, captureCount]);
+
+  const handleRetry = () => {
+    setCaptureCount(0);
+    setCapturedImage(null);
+    setMessage(Messages.camera.upload);
+    setColorTheme("info");
+    setIsCameraActive(true); // Reactivar la cámara
+  };
 
   return (
     <View>
-
       <View style={{ marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Message colorTheme={colorTheme}>
           {message}
@@ -148,23 +143,27 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
             </Flex>
 
             <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
-
-            <Button
-              variation="primary"
-              onClick={captureAndProcessPhoto}
-              disabled={isProcessing} >
-              {isProcessing ? Messages.buttons.process : Messages.buttons.manualProcess}
-            </Button>
           </Flex>
         </View>
       ) : (
         <View style={{ marginTop: 20 }}>
-          <Flex direction="column" gap="medium">
-            <Image
-              alt="Imagen Capturada"
-              src={capturedImage!}
-              style={{ maxWidth: "100%", height: "auto", margin: "0 auto" }}
-            />
+          <Flex direction="column" gap="medium" alignItems="center">
+            {captureCount >= 2 ? (
+              <>
+                <Message colorTheme="info">
+                  {Messages.camera.reintent}
+                </Message>
+                <Button onClick={handleRetry} variation="primary">
+                  {Messages.buttons.manualProcess}
+                </Button>
+              </>
+            ) : (
+              <Image
+                alt="Imagen Capturada"
+                src={capturedImage!}
+                style={{ maxWidth: "100%", height: "auto", margin: "0 auto" }}
+              />
+            )}
           </Flex>
         </View>
       )}

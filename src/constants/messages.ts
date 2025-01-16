@@ -36,7 +36,7 @@ export const Messages = {
     buttons: {
         back: "Regresar",
         process: "Procesando...",
-        manualProcess:"Capturar manualmente",
+        manualProcess: "Reintentar",
         sing: "Firmar"
     },
     camera: {
@@ -44,7 +44,8 @@ export const Messages = {
         dniError: "DNI inválido, vuelve a intentarlo",
         successCapture: "Imagen capturada.",
         requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente",
-        capture:"Capturando en "
+        capture: "Capturando en ",
+        reintent: "Se han realizado 2 capturas. ¿Deseas intentarlo nuevamente?"
     },
     accions: {
         loading: "Cargando..."
