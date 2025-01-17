@@ -35,7 +35,7 @@ Una aplicación fullstack Amplify, en cuyo backend se consumen las APIs de AWS y
       ]
     }
     ```
-* **Repositorio de GitHub:** Un duplicado del repositorio https://github.com/lizethcastro28/sanitaspe-esignature-qa
+* **Repositorio de GitHub:** https://github.com/lizethcastro28/sanitaspe-esignature-qa
 
 ### Implementación en Amplify
 1. **Crear una nueva aplicación en Amplify:**
@@ -43,7 +43,7 @@ Una aplicación fullstack Amplify, en cuyo backend se consumen las APIs de AWS y
    * Crea una nueva aplicación y sigue el asistente.
 2. **Conectar con el repositorio de GitHub:**
    * Selecciona GitHub como proveedor de código fuente.
-   * Autoriza a Amplify para acceder al repositorio duplicado.
+   * Autoriza a Amplify para acceder al repositorio indicado.
    * Selecciona el repositorio y la rama `main` (o la rama que deseas desplegar).
 3. **Configurar la aplicación:**
    * Sigue las instrucciones del asistente para configurar la aplicación.
@@ -57,7 +57,7 @@ Una aplicación fullstack Amplify, en cuyo backend se consumen las APIs de AWS y
 Una vez que la implementación se haya completado, podrás acceder a tu aplicación en Amplify -> MyApp -> Domain.
 
 ### Consideraciones Adicionales
-* **Errores:** Si encuentras algún error durante el proceso, revisa la pila de CloudFormation en AWS para obtener más detalles. Por lo general son errores de permisos IAM. Una vez resuelto, elimina la Pila y vuelve a ejecutar el proceso anterior.
+* **Errores:** Si encuentras algún error durante el deploy, revisa la pila de CloudFormation en AWS para obtener más detalles. Por lo general son errores de permisos IAM. Una vez resuelto, elimina la Pila y vuelve a ejecutar todo el proceso.
 
 **¿Necesitas más detalles sobre alguna parte del proceso?**
 ## Deploying to AWS
