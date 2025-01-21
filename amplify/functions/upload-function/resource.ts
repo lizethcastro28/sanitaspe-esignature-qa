@@ -8,6 +8,6 @@ export const uploadFunction = defineFunction({
     name: "upload-function",
     timeoutSeconds: 300,
     environment: {
-        BUCKET_NAME: process.env.BUCKET_NAME || "liveness-images-sessions-qa"
+        BUCKET_NAME: process.env.S3_IMAGENS || "liveness-images-sessions-qa"
     },
 })
