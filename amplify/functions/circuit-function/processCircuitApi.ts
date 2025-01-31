@@ -19,6 +19,7 @@ export const processCircuitApi = async (
     const request = {
         docs
     };
+    console.log('--------request: ', request)
     const response = await fetch(url, {
         method: 'POST',
         headers: {

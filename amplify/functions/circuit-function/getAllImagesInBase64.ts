@@ -23,13 +23,10 @@ const s3 = new S3();
  */
 export const getAllImagesInBase64 = async (session_id: string, bucket_name: string): Promise<ImageObject[]> => {
     try {
-        console.log('---Bucket: ', bucket_name)
-        console.log("---session: ", session_id)
         const listObjects = await s3.listObjectsV2({
             Bucket: bucket_name,
             Prefix: session_id,
         }).promise();
-        console.log("----listObjects: ", listObjects)
         
         // Filtrar los archivos para asegurar que no incluya carpetas ni archivos vacíos
         const imageKeys = listObjects.Contents?.filter(file => file.Key && (file.Size ?? 0) > 0).map(file => file.Key) || [];
@@ -50,7 +47,6 @@ export const getAllImagesInBase64 = async (session_id: string, bucket_name: stri
             };
         }));
 
-        console.log("----la imageObjects: ", imageObjects);
         return imageObjects;
     } catch (error) {
         console.error('Error al obtener imágenes:', error);
