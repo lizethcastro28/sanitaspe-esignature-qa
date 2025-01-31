@@ -219,7 +219,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                                 console.log("----------circuit: ", circuit)
                                 console.log("----------DATA: ", data)
                                 console.log("----------circuitdata: ", circuitData)
-                                let redirect = ""
+                                //let redirect = ""
                                 /*if (circuitData && circuitData.urlRedirect) {
                                     redirect = circuitData.urlRedirect;
                                 }*/
