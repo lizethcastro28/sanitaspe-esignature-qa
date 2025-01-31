@@ -216,11 +216,14 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             console.log('-----is live: ', data.Confidence);
                             setTimeout(async () => {
                                 const circuitData = await processCircuit(circuit, data);
+                                console.log("----------circuit: ", circuit)
+                                console.log("----------DATA: ", data)
+                                console.log("----------circuitdata: ", circuitData)
                                 let redirect = ""
-                                if (circuitData && circuitData.urlRedirect) {
+                                /*if (circuitData && circuitData.urlRedirect) {
                                     redirect = circuitData.urlRedirect;
-                                }
-                                window.location.href = redirect;
+                                }*/
+                                //window.location.href = redirect;
                             }, 13000);
                         } else {
                             console.log('---is not live: ', data.Confidence);

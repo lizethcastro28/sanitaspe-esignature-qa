@@ -23,6 +23,8 @@ const s3 = new S3();
  */
 export const getAllImagesInBase64 = async (session_id: string, bucket_name: string): Promise<ImageObject[]> => {
     try {
+        console.log('Bucket: ', bucket_name)
+        console.log("session: ", session_id)
         const listObjects = await s3.listObjectsV2({
             Bucket: bucket_name,
             Prefix: session_id,
@@ -40,11 +42,13 @@ export const getAllImagesInBase64 = async (session_id: string, bucket_name: stri
 
             const base64Content = object.Body ? object.Body.toString('base64') : '';
 
-            return {
+            const r = {
                 name: key!.split('/').pop()!, // Obtener solo el nombre del archivo del key
                 size: object.ContentLength || 0,
                 content: base64Content
             };
+
+            return r;
         }));
 
         return imageObjects;
