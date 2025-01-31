@@ -42,17 +42,15 @@ export const getAllImagesInBase64 = async (session_id: string, bucket_name: stri
             }).promise();
 
             const base64Content = object.Body ? object.Body.toString('base64') : '';
-            console.log("----base64: ", base64Content);
 
-            const r = {
+            return {
                 name: key!.split('/').pop()!, // Obtener solo el nombre del archivo del key
                 size: object.ContentLength || 0,
                 content: base64Content
             };
-
-            return r;
         }));
 
+        console.log("----la imageObjects: ", imageObjects);
         return imageObjects;
     } catch (error) {
         console.error('Error al obtener imágenes:', error);
