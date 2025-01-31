@@ -29,7 +29,7 @@ export const processCircuitApi = async (
         },
         body: JSON.stringify(request)
     });
-    console.log('la respuesta del server: ', response)
+    console.log('la respuesta del server: ', response.json())
     if (!response.ok) {
         throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}`);
     }

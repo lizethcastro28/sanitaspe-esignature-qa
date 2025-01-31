@@ -112,6 +112,9 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         }
         const finalUrl = process_circuit_url.replace("{circuit}", circuit);
 
+        console.log("-----------finalUrl: ", finalUrl);
+        console.log("-----------docs: ", docs);
+
         const data = await processCircuitApi(finalUrl, accessToken, docs);
 
         return {
