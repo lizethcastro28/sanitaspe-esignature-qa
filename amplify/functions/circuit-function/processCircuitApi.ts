@@ -20,6 +20,7 @@ export const processCircuitApi = async (
         docs
     };
     console.log('--------request: ', request)
+    console.log('la url de solicitud: ', url)
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -28,6 +29,7 @@ export const processCircuitApi = async (
         },
         body: JSON.stringify(request)
     });
+    console.log('la respuesta del server: ', response)
     if (!response.ok) {
         throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}`);
     }
