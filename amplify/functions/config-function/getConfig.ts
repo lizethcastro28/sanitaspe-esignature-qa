@@ -80,6 +80,7 @@ export const getConfig = async (event: APIGatewayEvent): Promise<APIGatewayProxy
             },
         });
 
+        console.log('----La respuesta get_channel: ', response)
         // Verifica si la respuesta es exitosa
         if (!response.ok) {
             throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}`);

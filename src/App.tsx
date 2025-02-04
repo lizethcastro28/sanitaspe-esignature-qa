@@ -121,6 +121,7 @@ const App = () => {
       });
 
       const response = await restOperation.response;
+      console.log('-------getConfig: ', response)
 
       if (response && response.body) {
         if (response.body instanceof ReadableStream) {
