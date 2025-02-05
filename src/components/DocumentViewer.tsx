@@ -17,24 +17,24 @@ interface Document {
 interface DocumentViewerProps {
   pdfDocuments: Document[];
   idStatus: number;
-  isRekognition: boolean;
+  isRequireDocument: boolean;
 }
 
-const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus, isRekognition }) => {
+const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus, isRequireDocument }) => {
   const [message, setMessage] = useState<string>(Messages.docs.signed);
 
   // Usamos useEffect para actualizar el mensaje cuando idStatus cambie
   useEffect(() => {
-    if (isRekognition) return;
+    if (isRequireDocument) return;
 
     if (idStatus === 1 || idStatus === 3) {
       setMessage(Messages.docs.unsigned);
     } else {
       setMessage(Messages.docs.signed);
     }
-  }, [idStatus, isRekognition]); // Dependencias: solo se actualiza cuando idStatus o isRekognition cambian
+  }, [idStatus, isRequireDocument]); // Dependencias: solo se actualiza cuando idStatus o isRekognition cambian
 
-  if (isRekognition) return null;
+  if (isRequireDocument) return null;
 
   let filteredDocuments = pdfDocuments;
 

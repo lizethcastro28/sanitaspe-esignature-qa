@@ -216,9 +216,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             console.log('-----is live: ', data.Confidence);
                             setTimeout(async () => {
                                 const circuitData = await processCircuit(circuit, data);
-                                console.log("----------circuit: ", circuit)
-                                console.log("----------DATA: ", data)
-                                console.log("----------circuitdata: ", circuitData)
                                 let redirect = ""
                                 if (circuitData && circuitData.urlRedirect) {
                                     redirect = circuitData.urlRedirect;
@@ -264,6 +261,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
             });
 
             const response = await restOperation.response;
+            console.log('---------------response: ', response);
 
             if (response) {
                 if (response.body instanceof ReadableStream) {

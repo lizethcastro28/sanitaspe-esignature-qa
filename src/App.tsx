@@ -58,7 +58,8 @@ const App = () => {
   const [idStatus, setIdStatus] = useState(1);
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("");
-  const [isRekognition, setIsRekognition] = useState(false);
+  //const [isRekognition, setIsRekognition] = useState(false);
+  const [isRequireDocument, setIsRequireDocument]= useState(false);
 
 
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
@@ -144,13 +145,15 @@ const App = () => {
           const biometricHistory = responseJson.biometricHistory;
           setName(biometricHistory.signers?.[0]?.name ?? "");
           //Verifico si debo Firmar
-          let { idStatus, isRekognition } = biometricHistory;
-          console.log('-----------REKOGNITION:', isRekognition);
+          let { idStatus, isRekognition, isRequireDocument } = biometricHistory;
+          console.log('-----------isRequireDocument:', isRequireDocument);
+          console.log('-----------isRekognition:', isRekognition);
           setIdStatus(idStatus);
           if (idStatus === 1) {
-            if (isRekognition === true) {
+            if (isRequireDocument === true) {
               //subir el DNI
-              setIsRekognition(true);
+              //setIsRekognition(true);
+              setIsRequireDocument(true);
               setDetalleFirma("");
             }
           }
@@ -225,7 +228,7 @@ const App = () => {
                 {/* Botón Firmar */}
                 <View style={{ marginTop: 20 }}>
                   <Heading level={2}>{name} {detalleFirma}</Heading>
-                  {(idStatus === 1 || idStatus === 3) && !isRekognition && (
+                  {(idStatus === 1 || idStatus === 3) && !isRequireDocument && (
                     <Button
                     style={{ marginTop: 20 }}
                       variation="primary"
@@ -243,14 +246,14 @@ const App = () => {
                   <DocumentViewer
                     pdfDocuments={pdfDocuments}
                     idStatus={idStatus}
-                    isRekognition={isRekognition}
+                    isRequireDocument={isRequireDocument}
                   />
                 </div>
               </>
             )}
 
             {/* Cámara */}
-            {idStatus === 1 && isRekognition && (
+            {idStatus === 1 && isRequireDocument && (
               <Camera docType="DNI" circuit={circuit} />
             )}
 
