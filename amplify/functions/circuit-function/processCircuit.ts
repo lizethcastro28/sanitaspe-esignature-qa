@@ -34,8 +34,8 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         };
     }
     console.log('-------El body en process circuit: ', body)
-    const session_id = body.SessionId;
-    const reference_image = body.ReferenceImage;
+    const session_id = body.LivenessResult.SessionId;
+    const reference_image = body.LivenessResult.ReferenceImage;
 
     if (!session_id || !reference_image || !reference_image.S3Object) {
         return {

@@ -23,12 +23,68 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const [circuit, setCircuit] = useState("");
     const [sessionResults, setSessionResults] = useState<boolean>(true);
     const [video, setVideo] = useState<any>(null);
+    const [address, setAddress] = useState("");
 
     let mediaRecorder: MediaRecorder | null = null;
+
+    interface NominatimResponse {
+        display_name: string;
+    }
+
+    //=========0. Obtener Geolocalizacion
+
+    const getLocation = (): Promise<string> => { // Tipamos el retorno de la función
+        return new Promise((resolve, reject) => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        try {
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+
+                            if (!response.ok) {
+                                const errorBody = await response.text(); // Intenta obtener el cuerpo del error
+                                throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+                            }
+
+                            const data = await response.json() as NominatimResponse; // Casteamos a la interfaz
+
+                            const address = data.display_name; // TypeScript ya sabe que es string
+
+                            resolve(address);
+                        } catch (error) {
+                            console.error("Error en getLocation:", error); // Imprimimos el error completo
+                            reject(error);
+                        }
+                    },
+                    (error) => {
+                        console.error("Error en getCurrentPosition:", error); // Imprimimos el error
+                        reject(error);
+                    }
+                );
+            } else {
+                reject(new Error("Geolocalización no soportada en este navegador."));
+            }
+        });
+    };
 
 
     useEffect(() => {
         if (screen === 'detector') {
+
+            // Obtener la geolocalizacion del usuario
+            getLocation()
+                .then((address) => {
+                    console.log("---------------Dirección:", address);
+                    setAddress(address);
+                })
+                .catch((error) => {
+                    console.error("Error obteniendo la ubicación:", error);
+                });
+
+            //Comensar a grabar el video   
             let recordedChunks: BlobPart[] = [];
 
             const intervalId = setInterval(() => {
@@ -255,7 +311,10 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                 apiName: apiGateway,
                 path: `circuit?circuit=${circuit}`,
                 options: {
-                    body: data,
+                    body: { 
+                        LivenessResult: data,
+                        Geolocation: address
+                    }
                 }
             });
 
@@ -384,9 +443,9 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         />
                     ) : screen === 'cancelled' ? (
                         <ErrorContent
-                        title={Messages.cancelledAction.title}
-                        description={Messages.cancelledAction.description}
-                        instructions={Messages.cancelledAction.instructions}
+                            title={Messages.cancelledAction.title}
+                            description={Messages.cancelledAction.description}
+                            instructions={Messages.cancelledAction.instructions}
                             visible={true}
                             type="error"
                         />
