@@ -189,7 +189,7 @@ const App = () => {
   /**
    * handleClick: muestra la interfaz body con la video firma.
    */
-  const handleClick = () => {
+  const handlesSowBody = () => {
     setShowBody(true);
   };
 
@@ -232,7 +232,7 @@ const App = () => {
                     <Button
                     style={{ marginTop: 20 }}
                       variation="primary"
-                      onClick={handleClick}
+                      onClick={handlesSowBody}
                       size='large'
                       
                     >

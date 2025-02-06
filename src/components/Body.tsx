@@ -6,7 +6,6 @@ import '@aws-amplify/ui-react/styles.css';
 import '../App.css';
 import { dictionary } from './dictionary';
 import ErrorContent from './ErrorContent';
-import { Alert } from '@aws-amplify/ui-react';
 import { Messages } from '../constants/messages';
 
 interface BodyProps {
@@ -15,6 +14,7 @@ interface BodyProps {
 }
 
 const apiGateway = import.meta.env.VITE_API_GATEWAY;
+const VITE_AWS_REGION = import.meta.env.VITE_AWS_REGION;
 
 const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -57,7 +57,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
 
                                 // Obtener el tamaño del video en bytes
                                 const videoSize = recordedBlob.size;
-                                console.log("Tamaño del video en bytes:", videoSize);
 
                                 try {
                                     if (!createLivenessApiData) {
@@ -227,19 +226,19 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             setScreen('notLive');
                         }
                     } else {
-                        console.log('-------No se realizó la comprobación');
+                        console.error('-------No se realizó la comprobación');
                         setScreen('error');
                     }
                 } else {
-                    console.log('GET call succeeded but response body is empty');
+                    console.error('GET call succeeded but response body is empty');
                     setScreen('error');
                 }
             } catch (error) {
-                console.log('------GET call failed: ', error);
+                console.error('------GET call failed: ', error);
                 setScreen('error');
             }
         } else {
-            console.log('No sessionId available');
+            console.error('No sessionId available');
             setScreen('error');
         }
     };
@@ -261,7 +260,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
             });
 
             const response = await restOperation.response;
-            console.log('---------------response: ', response);
 
             if (response) {
                 if (response.body instanceof ReadableStream) {
@@ -359,24 +357,12 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         <div>
                             <FaceLivenessDetector
                                 sessionId={createLivenessApiData?.sessionId || ''}
-                                region="us-east-1"
+                                region={VITE_AWS_REGION}
                                 onAnalysisComplete={handleAnalysisComplete}
                                 onUserCancel={onUserCancel}
                                 displayText={dictionary['es']}
                                 onError={(error) => {
                                     console.error('FaceLivenessDetector error:', error);
-                                }}
-                                components={{
-                                    PhotosensitiveWarning: (): JSX.Element => {
-                                        return (
-                                            <Alert
-                                                isDismissible={false}
-                                                hasIcon={true}
-                                            >
-                                                Esta verificación muestra luces de colores. Ten cuidado si eres fotosensible.
-                                            </Alert>
-                                        );
-                                    },
                                 }}
                             />
                         </div>
