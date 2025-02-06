@@ -1,9 +1,3 @@
-interface ImageObject {
-    name: string;
-    size: number;
-    content: string;
-}
-
 /**
  * processCircuitApi: Realiza solicitud POST al API externa utilizando el accessToken
  * @param url del API
@@ -14,22 +8,34 @@ interface ImageObject {
 export const processCircuitApi = async (
     url: string,
     accessToken: string,
-    bodyRequest: ImageObject[]
+    bodyRequest: any
 ): Promise<any> => {
-    console.log('--------bodyRequest: ', bodyRequest)
-    console.log('la url de solicitud: ', url)
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(bodyRequest)
-    });
-    console.log('la respuesta del server: ', response.json())
-    if (!response.ok) {
-        throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}`);
-    }
+    console.log('-------->>>>bodyRequest: ', bodyRequest);
+    console.log('la url de solicitud: ', url);
 
-    return response.json();
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bodyRequest)
+        });
+
+        // Espera a que la promesa se resuelva ANTES de verificar el estado
+        const responseData = await response.json(); 
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}, Cuerpo: ${errorBody}`);
+        }
+
+        console.log('la respuesta del server: ', responseData);
+        return responseData;
+
+    } catch (error) {
+        console.error('Error en processCircuitApi:', error);
+        throw error; 
+    }
 };
