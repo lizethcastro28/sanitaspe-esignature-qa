@@ -23,7 +23,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
     const [circuit, setCircuit] = useState("");
     const [sessionResults, setSessionResults] = useState<boolean>(true);
     const [video, setVideo] = useState<any>(null);
-    const [address, setAddress] = useState("");
 
     let mediaRecorder: MediaRecorder | null = null;
 
@@ -33,7 +32,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
 
     //=========0. Obtener Geolocalizacion
 
-    const getLocation = (): Promise<string> => { // Tipamos el retorno de la función
+    const getLocation = (): Promise<string> => {
         return new Promise((resolve, reject) => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -45,22 +44,22 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             );
 
                             if (!response.ok) {
-                                const errorBody = await response.text(); // Intenta obtener el cuerpo del error
+                                const errorBody = await response.text();
                                 throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
                             }
 
-                            const data = await response.json() as NominatimResponse; // Casteamos a la interfaz
+                            const data = await response.json() as NominatimResponse;
 
-                            const address = data.display_name; // TypeScript ya sabe que es string
+                            const address = data.display_name;
 
                             resolve(address);
                         } catch (error) {
-                            console.error("Error en getLocation:", error); // Imprimimos el error completo
+                            console.error("Error en getLocation:", error);
                             reject(error);
                         }
                     },
                     (error) => {
-                        console.error("Error en getCurrentPosition:", error); // Imprimimos el error
+                        console.error("Error en getCurrentPosition:", error);
                         reject(error);
                     }
                 );
@@ -73,17 +72,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
 
     useEffect(() => {
         if (screen === 'detector') {
-
-            // Obtener la geolocalizacion del usuario
-            getLocation()
-                .then((address) => {
-                    console.log("---------------Dirección:", address);
-                    setAddress(address);
-                })
-                .catch((error) => {
-                    console.error("Error obteniendo la ubicación:", error);
-                });
-
             //Comensar a grabar el video   
             let recordedChunks: BlobPart[] = [];
 
@@ -267,10 +255,12 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
 
                     if (data.Status === 'SUCCEEDED') {
                         setSessionResults(true);
+                        // Obtener la geolocalizacion del usuario
+                        const address = await getLocation();
                         if (data.Confidence > 90) {
                             console.log('-----is live: ', data.Confidence);
                             setTimeout(async () => {
-                                const circuitData = await processCircuit(circuit, data);
+                                const circuitData = await processCircuit(circuit, data, address);
                                 let redirect = ""
                                 if (circuitData && circuitData.urlRedirect) {
                                     redirect = circuitData.urlRedirect;
@@ -305,13 +295,14 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
      * @param circuit 
      * @param data 
      */
-    const processCircuit = async (circuit: string | null, data: any) => {
+    const processCircuit = async (circuit: string | null, data: any, address: any) => {
+        console.log('----------adresssss: ', address)
         try {
             const restOperation = post({
                 apiName: apiGateway,
                 path: `circuit?circuit=${circuit}`,
                 options: {
-                    body: { 
+                    body: {
                         LivenessResult: data,
                         Geolocation: address
                     }

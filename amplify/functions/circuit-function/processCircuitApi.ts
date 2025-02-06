@@ -8,18 +8,15 @@ interface ImageObject {
  * processCircuitApi: Realiza solicitud POST al API externa utilizando el accessToken
  * @param url del API
  * @param accessToken para autenticarse
- * @param docs Lista de documentos a enviar en el request
+ * @param bodyRequest Lista de documentos a enviar en el request
  * @returns status de la solicitud
  */
 export const processCircuitApi = async (
     url: string,
     accessToken: string,
-    docs: ImageObject[]
+    bodyRequest: ImageObject[]
 ): Promise<any> => {
-    const request = {
-        docs
-    };
-    console.log('--------request: ', request)
+    console.log('--------bodyRequest: ', bodyRequest)
     console.log('la url de solicitud: ', url)
     const response = await fetch(url, {
         method: 'POST',
@@ -27,7 +24,7 @@ export const processCircuitApi = async (
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request)
+        body: JSON.stringify(bodyRequest)
     });
     console.log('la respuesta del server: ', response.json())
     if (!response.ok) {

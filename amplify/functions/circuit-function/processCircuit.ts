@@ -115,7 +115,9 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         console.log("-----------finalUrl: ", finalUrl);
         console.log("-----------docs: ", docs);
 
-        const data = await processCircuitApi(finalUrl, accessToken, docs);
+        body.docs = docs;
+
+        const data = await processCircuitApi(finalUrl, accessToken, body );
 
         return {
             statusCode: 200,
