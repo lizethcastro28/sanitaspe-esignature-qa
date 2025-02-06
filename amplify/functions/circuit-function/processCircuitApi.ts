@@ -10,7 +10,7 @@ export const processCircuitApi = async (
     accessToken: string,
     bodyRequest: any
 ): Promise<any> => {
-    console.log('-------->>>>bodyRequest: ', bodyRequest);
+
     console.log('la url de solicitud: ', url);
 
     try {
@@ -23,15 +23,12 @@ export const processCircuitApi = async (
             body: JSON.stringify(bodyRequest)
         });
 
-        // Espera a que la promesa se resuelva ANTES de verificar el estado
         const responseData = await response.json(); 
 
         if (!response.ok) {
             const errorBody = await response.text();
             throw new Error(`Error en la respuesta HTTP! Estado: ${response.status}, Cuerpo: ${errorBody}`);
         }
-
-        console.log('la respuesta del server: ', responseData);
         return responseData;
 
     } catch (error) {
