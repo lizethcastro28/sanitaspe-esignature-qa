@@ -19,7 +19,7 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         return {
             statusCode,
             headers,
-            body: JSON.stringify({ message }), // Mensaje consistente
+            body: JSON.stringify({ message }), 
         };
     };
 
@@ -36,8 +36,6 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         return handleError(400, 'Error al analizar el cuerpo del evento.', error);
     }
 
-    console.log('---el evento: ', event)
-    console.log('---el Body: ', body);
     const { data } = body;
     if (!data || !data.SessionId || !data.ReferenceImage
         || !data.ReferenceImage.S3Object) {
@@ -90,7 +88,6 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
             "docs": docs
         }
 
-        console.log('--------el request enviado a process_circuit: ', body_request)
         const data = await processCircuitApi(finalUrl, accessToken, body_request);
 
         return {

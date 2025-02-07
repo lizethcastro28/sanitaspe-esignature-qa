@@ -260,13 +260,16 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         const address = await getLocation();
                         if (data.Confidence > 90) {
                             console.log('-----is live: ', data.Confidence);
+                            // Redondear data.Confidence a 2 decimales y convertir a número
+                            const roundedConfidence = parseFloat(data.Confidence.toFixed(2));
+                            data.Confidence = roundedConfidence;
                             data.Geolocation = address;
                             setTimeout(async () => {
                                 let redirect = ""
                                 const circuitData = await processCircuit(circuit, data);
-                                 if (circuitData && circuitData.urlRedirect) {
-                                     redirect = circuitData.urlRedirect;
-                                 }
+                                if (circuitData && circuitData.urlRedirect) {
+                                    redirect = circuitData.urlRedirect;
+                                }
                                 window.location.href = redirect;
                             }, 13);
                         } else {
