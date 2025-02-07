@@ -38,9 +38,9 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
 
     console.log('---el evento: ', event)
     console.log('---el Body: ', body);
-    const { liveness_results } = body;
-    if (!liveness_results || !liveness_results.SessionId || !liveness_results.ReferenceImage
-        || !liveness_results.ReferenceImage.S3Object) {
+    const { data } = body;
+    if (!data || !data.SessionId || !data.ReferenceImage
+        || !data.ReferenceImage.S3Object) {
         return handleError(400, 'Faltan propiedades en el cuerpo de la solicitud.');
     }
 
@@ -48,8 +48,9 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         SessionId: session_id,
         ReferenceImage: { S3Object: { Bucket: bucket_name } },
         Status: status,
-        Confidence: confidence
-    } = liveness_results;
+        Confidence: confidence,
+        Geolocation: geolocation
+    } = data;
 
 
     const url_token = process.env.OAUTH_TOKEN_URL;
@@ -85,7 +86,7 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         const body_request = {
             "status": status,
             "confidence": confidence,
-            "geolocation": body.Geolocation,
+            "geolocation": geolocation,
             "docs": docs
         }
 

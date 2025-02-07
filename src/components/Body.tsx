@@ -260,9 +260,10 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         const address = await getLocation();
                         if (data.Confidence > 90) {
                             console.log('-----is live: ', data.Confidence);
+                            data.Geolocation = address;
                             setTimeout(async () => {
                                 let redirect = ""
-                                const circuitData = await processCircuit(circuit, data, address);
+                                const circuitData = await processCircuit(circuit, data);
                                  if (circuitData && circuitData.urlRedirect) {
                                      redirect = circuitData.urlRedirect;
                                  }
@@ -296,15 +297,14 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
      * @param circuit 
      * @param data 
      */
-    const processCircuit = async (circuit: string | null, data: any, address: any) => {
+    const processCircuit = async (circuit: string | null, data: any) => {
         try {
             const restOperation = post({
                 apiName: apiGateway,
                 path: `circuit?circuit=${circuit}`,
                 options: {
                     body: {
-                        LivenessResult: data,
-                        Geolocation: address
+                        data
                     }
                 }
             });
