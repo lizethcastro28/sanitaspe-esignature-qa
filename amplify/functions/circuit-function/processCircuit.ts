@@ -36,6 +36,8 @@ export const processCircuit = async (event: APIGatewayEvent): Promise<APIGateway
         return handleError(400, 'Error al analizar el cuerpo del evento.', error);
     }
 
+    console.log('---el evento: ', event)
+    console.log('---el Body: ', body);
     const { liveness_results } = body;
     if (!liveness_results || !liveness_results.SessionId || !liveness_results.ReferenceImage
         || !liveness_results.ReferenceImage.S3Object) {
