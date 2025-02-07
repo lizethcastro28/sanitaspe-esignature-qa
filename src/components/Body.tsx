@@ -297,7 +297,6 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
      * @param data 
      */
     const processCircuit = async (circuit: string | null, data: any, address: any) => {
-        console.log('----------adresssss: ', address)
         try {
             const restOperation = post({
                 apiName: apiGateway,
