@@ -212,6 +212,7 @@ const App = () => {
           description={Messages.dataError.description}
           instructions={Messages.dataError.instructions}
           visible={false}
+          loader={false}
           type="error"
         />
       ) : (

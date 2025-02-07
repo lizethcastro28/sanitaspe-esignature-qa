@@ -12,8 +12,8 @@ export const Messages = {
         instructions: "",
     },
     verificationSuccess: {
-        title: "Verificación exitosa",
-        description: "Llamo a la API",
+        title: "Procesando",
+        description: "Gracias por completar la solicitud",
         instructions: "",
     },
     notLive: {

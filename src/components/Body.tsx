@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness';
-import { Loader, ThemeProvider } from '@aws-amplify/ui-react';
+import { Loader, ThemeProvider, Message } from '@aws-amplify/ui-react';
 import { get, post } from 'aws-amplify/data';
 import '@aws-amplify/ui-react/styles.css';
 import '../App.css';
@@ -242,6 +242,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
      */
     const handleAnalysisComplete = async () => {
         if (createLivenessApiData) {
+            setScreen('success');
             try {
                 const restOperation = get({
                     apiName: apiGateway,
@@ -260,13 +261,13 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                         if (data.Confidence > 90) {
                             console.log('-----is live: ', data.Confidence);
                             setTimeout(async () => {
-                                const circuitData = await processCircuit(circuit, data, address);
                                 let redirect = ""
-                                if (circuitData && circuitData.urlRedirect) {
-                                    redirect = circuitData.urlRedirect;
-                                }
+                                const circuitData = await processCircuit(circuit, data, address);
+                                 if (circuitData && circuitData.urlRedirect) {
+                                     redirect = circuitData.urlRedirect;
+                                 }
                                 window.location.href = redirect;
-                            }, 13000);
+                            }, 13);
                         } else {
                             console.log('---is not live: ', data.Confidence);
                             setScreen('notLive');
@@ -398,7 +399,13 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
             <div style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: instructions_location === 'left' ? 'row' : 'row-reverse' }}>
 
                 <div style={{ flex: 1, padding: '1rem' }}>
-                    {instructions}
+                    <Message className="my-message"
+                        colorTheme={'info'}
+                        heading={"Instrucciones"}
+                        variation="plain"
+                    >
+                        {instructions}
+                    </Message>
                 </div>
                 <div style={{ flex: 1 }}>
                     {loading ? (
@@ -422,6 +429,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.notLive.description}
                             instructions={Messages.notLive.instructions}
                             visible={true}
+                            loader={false}
                             type="error"
                         />
                     ) : screen === 'dataError' ? (
@@ -430,6 +438,7 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.dataError.title}
                             instructions={Messages.dataError.title}
                             visible={false}
+                            loader={false}
                             type="error"
                         />
                     ) : screen === 'cancelled' ? (
@@ -438,7 +447,17 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.cancelledAction.description}
                             instructions={Messages.cancelledAction.instructions}
                             visible={true}
+                            loader={false}
                             type="error"
+                        />
+                    ) : screen === 'success' ? (
+                        <ErrorContent
+                            title={Messages.verificationSuccess.title}
+                            description={Messages.verificationSuccess.description}
+                            instructions={Messages.verificationSuccess.instructions}
+                            visible={false}
+                            loader={true}
+                            type="info"
                         />
                     ) : (
                         <ErrorContent
@@ -446,9 +465,11 @@ const Body: React.FC<BodyProps> = ({ instructions, instructions_location }) => {
                             description={Messages.unexpectedError.description}
                             instructions={Messages.unexpectedError.instructions}
                             visible={false}
+                            loader={false}
                             type="error"
                         />
-                    )}
+                    )
+                    }
                 </div>
             </div>
         </ThemeProvider>

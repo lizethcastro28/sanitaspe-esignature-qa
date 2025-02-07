@@ -6,6 +6,7 @@ import {
   Heading,
   Message,
   Flex,
+  Loader,
 } from '@aws-amplify/ui-react';
 import { Messages } from '../constants/messages';
 
@@ -14,6 +15,7 @@ interface AlertComponentProps {
   description: string;
   instructions: string;
   visible: boolean;
+  loader: boolean;
   type: 'error' | 'info' | 'success' | 'warning'; // Define el tipo de MessageColorTheme
 }
 
@@ -22,6 +24,7 @@ const ErrorContent: React.FC<AlertComponentProps> = ({
   description,
   instructions,
   visible,
+  loader,
   type,
 }) => {
 
@@ -31,12 +34,13 @@ const ErrorContent: React.FC<AlertComponentProps> = ({
         <Heading level={1}>
           {title}
         </Heading>
-        <Flex style={{ marginTop: 20 }} direction="column" gap="large" width="100%" maxWidth="800px" margin="auto">
+        <Flex style={{ marginTop: 40 }} direction="column" gap="large" width="100%" maxWidth="800px" margin="auto">
           <Message className="my-message"
             colorTheme={type}
             heading={description}
             variation="filled"
           >
+            {loader && <Loader variation="linear" />} 
             {instructions}
           </Message>
           <View style={{ marginTop: 'large' }}>
