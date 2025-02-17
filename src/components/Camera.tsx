@@ -103,20 +103,29 @@ const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
 
   useEffect(() => {
     if (isCameraActive && captureCount < 2) {
+      const delay = 3000; // Retraso antes de comenzar (3 segundos)
       let seconds = 0;
-      const interval = setInterval(() => {
-        seconds += 1;
-        setSecondsElapsed(seconds);
-
-        if (seconds >= 5) {
-          clearInterval(interval);
-          captureAndProcessPhoto();
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
+      let interval: string | number | NodeJS.Timeout | undefined;
+  
+      const timeout = setTimeout(() => {
+        interval = setInterval(() => {
+          seconds += 1;
+          setSecondsElapsed(seconds);
+  
+          if (seconds >= 5) {
+            clearInterval(interval);
+            captureAndProcessPhoto();
+          }
+        }, 1000);
+      }, delay);
+  
+      return () => {
+        clearTimeout(timeout);
+        if (interval) clearInterval(interval);
+      };
     }
   }, [isCameraActive, captureCount]);
+  
 
   const handleRetry = () => {
     setCaptureCount(0);

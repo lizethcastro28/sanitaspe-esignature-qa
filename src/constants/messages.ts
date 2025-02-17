@@ -40,7 +40,7 @@ export const Messages = {
         sing: "Firmar"
     },
     camera: {
-        upload: "Sube tu DNI",
+        upload: "Muestra tu DNI a la cámara",
         dniError: "DNI inválido, vuelve a intentarlo",
         successCapture: "Imagen capturada.",
         requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente",
