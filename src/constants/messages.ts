@@ -26,6 +26,15 @@ export const Messages = {
         description: "Se ha producido un error al cargar la información de su cuenta.",
         instructions: "Vuelva a abrir el email original que le enviamos y haga clic en el enlace para generar el token nuevamente.",
     },
+    instructions: {
+        title: "Pasarás por un proceso de verificación facial para demostrar que eres una persona real.",
+        description: "Sigue las Instrucciones para completar la verificación",
+        instructions: [
+            { title: '1. DNI', description: 'Coloca tu DNI frente a la cámara' },
+            { title: '2. Documento', description: 'Verifica / lee tu documento y presiona Firmar' },
+            { title: '3. Prueba de vida y Firma', description: 'Coloca tu rostro frente a la cámara y espera a que se procese la firma biométrica' },
+        ]
+    },
     footer: {
         defaultContent: "DANAconnect Corp. Todos los derechos reservados.",
     },
@@ -37,7 +46,8 @@ export const Messages = {
         back: "Regresar",
         process: "Procesando...",
         manualProcess: "Reintentar",
-        sing: "Firmar"
+        sing: "Firmar",
+        continue: "Continuar"
     },
     camera: {
         upload: "Muestra tu DNI a la cámara",
@@ -45,7 +55,8 @@ export const Messages = {
         successCapture: "Imagen capturada.",
         requestError: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente",
         capture: "Capturando en ",
-        reintent: "Se han realizado 2 capturas con un DNI inválido. ¿Deseas intentarlo nuevamente?"
+        permissionError: "Error: Permiso de cámara denegado. Habilítelo en la configuración del navegador.",
+        imagenError: "Error: No se pudo capturar la imagen."
     },
     accions: {
         loading: "Cargando..."

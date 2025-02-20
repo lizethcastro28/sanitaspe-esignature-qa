@@ -1,25 +1,20 @@
 import { useState, useEffect } from 'react';
 import '@aws-amplify/ui-react/styles.css';
 import { get } from 'aws-amplify/data';
-import Body from './components/Body';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorContent from './components/ErrorContent';
 import { readStream, fillPdfDocuments } from './utils/functions';
-
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import Camera from './components/Camera';
-import DocumentViewer from './components/DocumentViewer';
+import Body from './components/Body';
+import Instructions from './components/Instructions'; // Asegúrate de importar el componente Instructions
 import { Messages } from './constants/messages';
 import {
   Loader,
   Text,
   View,
   Flex,
-  Heading,
-  Button
 } from "@aws-amplify/ui-react";
-
 
 type LocationType = 'left' | 'center' | 'right';
 type InstructionsLocationType = 'left' | 'right';
@@ -41,6 +36,7 @@ interface HeaderConfig {
   location: LocationType;
   bgColor: string;
 }
+
 interface FooterConfig {
   content: string;
   location: LocationType;
@@ -49,19 +45,14 @@ interface FooterConfig {
 
 const apiGateway = import.meta.env.VITE_API_GATEWAY;
 
-
 const App = () => {
-  const [showBody, setShowBody] = useState(false);
   const [name, setName] = useState("");
   const [pdfDocuments, setPdfDocuments] = useState<PdfDocument[]>([]);
   const [screen, setScreen] = useState<"error" | "loading" | "detector" | "success" | "notLive" | "dataError" | "cancelled" | "dataDocument">("loading");
   const [idStatus, setIdStatus] = useState(1);
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("");
-  //const [isRekognition, setIsRekognition] = useState(false);
-  const [isRequireDocument, setIsRequireDocument]= useState(false);
-
-
+  const [isRequireDocument, setIsRequireDocument] = useState(false);
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
     content: '',
     url: './logowhite.png',
@@ -72,7 +63,6 @@ const App = () => {
     instructions: '',
     instructions_location: 'left',
   });
-
   const [footerConfig, setFooterConfig] = useState<FooterConfig>({
     content: Messages.footer.defaultContent,
     location: 'center',
@@ -80,6 +70,7 @@ const App = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false); // Estado para manejar errores
+  const [showInstructions, setShowInstructions] = useState(true); // Nuevo estado para mostrar instrucciones
 
   useEffect(() => {
     const fetchDataAndProcess = async () => {
@@ -103,12 +94,6 @@ const App = () => {
     fetchDataAndProcess();
   }, []);
 
-  /**
-   * getData: obtiene los datos del circuito para realizar la operación.
-   * @param circuit codigo del circuito
-   * @param dana codigo o external trigger 
-   * @returns 
-   */
   const getData = async (circuit: string | null, dana: string | null) => {
     let path = `config?circuit=${circuit}`;
     if (dana) {
@@ -122,40 +107,30 @@ const App = () => {
       });
 
       const response = await restOperation.response;
-      console.log('-------getConfig: ', response)
 
       if (response && response.body) {
         if (response.body instanceof ReadableStream) {
           const responseBody = await readStream(response.body);
-
-          // Parsear el JSON de la respuesta descomprimida
           const responseJson = JSON.parse(responseBody);
-          console.log('la respuesta: ', responseJson)
+          console.log('-----Config: ', responseJson);
           const docs = responseJson.biometricHistory?.docs;
-          setPdfDocuments(pdfDocuments);
           if (Array.isArray(docs) && docs.length > 0) {
             const pdfDocuments = fillPdfDocuments(docs);
             setPdfDocuments(pdfDocuments);
           } else {
             console.error("No hay documentos PDF disponibles");
-            setHasError(true); // Cambiar a la página de error
+            setHasError(true);
             return;
           }
           const configPage = responseJson.configPage;
           const biometricHistory = responseJson.biometricHistory;
           setName(biometricHistory.signers?.[0]?.name ?? "");
-          //Verifico si debo Firmar
-          let { idStatus, isRekognition, isRequireDocument } = biometricHistory;
+          let { idStatus, isRequireDocument } = biometricHistory;
           console.log('-----------isRequireDocument:', isRequireDocument);
-          console.log('-----------isRekognition:', isRekognition);
           setIdStatus(idStatus);
-          if (idStatus === 1) {
-            if (isRequireDocument === true) {
-              //subir el DNI
-              //setIsRekognition(true);
-              setIsRequireDocument(true);
-              setDetalleFirma("");
-            }
+          if (idStatus === 1 && isRequireDocument) {
+            setIsRequireDocument(true);
+            setDetalleFirma("");
           }
           setHeaderConfig({
             content: configPage.header?.content || '',
@@ -176,21 +151,18 @@ const App = () => {
           });
         } else {
           console.error('No response body found, showing error content', screen);
-          setScreen('error')
-          setHasError(true); // Cambiar a la página de error
+          setScreen('error');
+          setHasError(true);
         }
       }
     } catch (error) {
       console.error('GET call config error:', error instanceof Error ? error.message : error);
-      setHasError(true); // Cambiar a la página de error
+      setHasError(true);
     }
   };
 
-  /**
-   * handleClick: muestra la interfaz body con la video firma.
-   */
-  const handlesSowBody = () => {
-    setShowBody(true);
+  const handleContinue = () => {
+    setShowInstructions(false); // Cambiar el estado para ocultar instrucciones
   };
 
   return (
@@ -199,13 +171,9 @@ const App = () => {
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
           <Flex direction="column" alignItems="center">
             <Text>{Messages.accions.loading}</Text>
-            <Loader
-              size="large"
-              variation="linear"
-            />
+            <Loader size="large" variation="linear" />
           </Flex>
         </View>
-
       ) : hasError ? (
         <ErrorContent
           title={Messages.dataError.title}
@@ -223,50 +191,25 @@ const App = () => {
             bgColor={headerConfig.bgColor}
             content={headerConfig.content}
           />
-          <div className="container">
-            {!showBody && (
-              <>
-                {/* Botón Firmar */}
-                <View style={{ marginTop: 20 }}>
-                  <Heading level={2}>{name} {detalleFirma}</Heading>
-                  {(idStatus === 1 || idStatus === 3) && !isRequireDocument && (
-                    <Button
-                    style={{ marginTop: 20 }}
-                      variation="primary"
-                      onClick={handlesSowBody}
-                      size='large'
-                      
-                    >
-                      {Messages.buttons.sing}
-                    </Button>
-                  )}
-                </View>
-
-                {/* Documentos */}
-                <div className="mb-8">
-                  <DocumentViewer
-                    pdfDocuments={pdfDocuments}
-                    idStatus={idStatus}
-                    isRequireDocument={isRequireDocument}
-                  />
-                </div>
-              </>
-            )}
-
-            {/* Cámara */}
-            {idStatus === 1 && isRequireDocument && (
-              <Camera docType="DNI" circuit={circuit} />
-            )}
-
-            {/* Body */}
-            {showBody && (
-              <Body
-                instructions={bodyConfig.instructions}
-                instructions_location={bodyConfig.instructions_location}
-              />
-            )}
-          </div>
-
+          {showInstructions && (idStatus === 1) ? (
+            <Instructions
+              title={Messages.instructions.title}
+              description={Messages.instructions.description}
+              instructions={Messages.instructions.instructions} 
+              type="info"
+              onContinue={handleContinue}
+            />
+          ) : (
+            <Body
+              name={name}
+              detalleFirma={detalleFirma}
+              idStatus={idStatus}
+              isRequireDocument={isRequireDocument}
+              pdfDocuments={pdfDocuments}
+              circuit={circuit}
+              bodyConfig={bodyConfig}
+            />
+          )}
           <Footer
             content={footerConfig.content}
             bgColor={footerConfig.bgColor}
