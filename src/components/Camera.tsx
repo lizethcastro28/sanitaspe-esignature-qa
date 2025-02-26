@@ -10,9 +10,9 @@ import {
   Flex,
 } from "@aws-amplify/ui-react";
 import { readStream } from "../utils/functions";
-import { Messages } from "../constants/messages";
 
 interface CameraProps {
+  Messages:any,
   docType: string;
   circuit: string;
 }
@@ -22,7 +22,7 @@ type MessageColorTheme = 'error' | 'info' | 'success' | 'warning' | 'neutral';
 const apiGateway = import.meta.env.VITE_API_GATEWAY;
 const hrefPadre = document.referrer;
 
-const Camera: React.FC<CameraProps> = ({ docType, circuit }) => {
+const Camera: React.FC<CameraProps> = ({ Messages, docType, circuit }) => {
   const webcamRef = useRef<Webcam>(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
   const [message, setMessage] = useState<string>(Messages.camera.upload);

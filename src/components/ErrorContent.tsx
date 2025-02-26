@@ -8,9 +8,9 @@ import {
   Flex,
   Loader,
 } from '@aws-amplify/ui-react';
-import { Messages } from '../constants/messages';
 
 interface AlertComponentProps {
+  Messages: any,
   title: string;
   description: string;
   instructions: string;
@@ -20,6 +20,7 @@ interface AlertComponentProps {
 }
 
 const ErrorContent: React.FC<AlertComponentProps> = ({
+  Messages,
   title,
   description,
   instructions,

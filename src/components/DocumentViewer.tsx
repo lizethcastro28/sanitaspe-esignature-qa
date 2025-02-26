@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { Messages } from '../constants/messages';
 
 import {
   Heading,
@@ -15,12 +14,13 @@ interface Document {
 }
 
 interface DocumentViewerProps {
+  Messages: any;
   pdfDocuments: Document[];
   idStatus: number;
   isRequireDocument: boolean;
 }
 
-const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus, isRequireDocument }) => {
+const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments, idStatus, isRequireDocument }) => {
   const [message, setMessage] = useState<string>(Messages.docs.signed);
 
   // Usamos useEffect para actualizar el mensaje cuando idStatus cambie
@@ -32,7 +32,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ pdfDocuments, idStatus,
     } else {
       setMessage(Messages.docs.signed);
     }
-  }, [idStatus, isRequireDocument]); // Dependencias: solo se actualiza cuando idStatus o isRekognition cambian
+  }, [idStatus, isRequireDocument]); 
 
   if (isRequireDocument) return null;
 

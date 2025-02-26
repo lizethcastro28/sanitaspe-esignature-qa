@@ -12,9 +12,10 @@ import {
   Card,
   Text,
 } from '@aws-amplify/ui-react';
-import { Messages } from '../constants/messages';
+
 
 interface AlertComponentProps {
+  Messages:any,
   title: string;
   description: string;
   instructions: Instruction[]; // array of Instruction objects
@@ -29,6 +30,7 @@ interface Instruction {
 
 
 const Instructions: React.FC<AlertComponentProps> = ({
+  Messages,
   title,
   description,
   instructions,

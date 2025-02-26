@@ -6,9 +6,10 @@ import '@aws-amplify/ui-react/styles.css';
 import '../App.css';
 import { dictionary } from './dictionary';
 import ErrorContent from './ErrorContent';
-import { Messages } from '../constants/messages';
+
 
 interface LivenesProps {
+    Messages: any;
     instructions: string;
     instructions_location: string;
 }
@@ -16,7 +17,7 @@ interface LivenesProps {
 const apiGateway = import.meta.env.VITE_API_GATEWAY;
 const VITE_AWS_REGION = import.meta.env.VITE_AWS_REGION;
 
-const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }) => {
+const Livenes: React.FC<LivenesProps> = ({ Messages, instructions, instructions_location }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [createLivenessApiData, setCreateLivenessApiData] = useState<{ sessionId: string } | null>(null);
     const [screen, setScreen] = useState<'loading' | 'detector' | 'success' | 'error' | 'notLive' | 'dataError' | 'cancelled' | "dataDocument">('loading');
@@ -427,6 +428,7 @@ const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }
                         </div>
                     ) : screen === 'notLive' ? (
                         <ErrorContent
+                            Messages={Messages}
                             title={Messages.notLive.title}
                             description={Messages.notLive.description}
                             instructions={Messages.notLive.instructions}
@@ -436,6 +438,7 @@ const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }
                         />
                     ) : screen === 'dataError' ? (
                         <ErrorContent
+                            Messages={Messages}
                             title={Messages.dataError.title}
                             description={Messages.dataError.title}
                             instructions={Messages.dataError.title}
@@ -445,6 +448,7 @@ const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }
                         />
                     ) : screen === 'cancelled' ? (
                         <ErrorContent
+                            Messages={Messages}
                             title={Messages.cancelledAction.title}
                             description={Messages.cancelledAction.description}
                             instructions={Messages.cancelledAction.instructions}
@@ -454,6 +458,7 @@ const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }
                         />
                     ) : screen === 'success' ? (
                         <ErrorContent
+                            Messages={Messages}
                             title={Messages.verificationSuccess.title}
                             description={Messages.verificationSuccess.description}
                             instructions={Messages.verificationSuccess.instructions}
@@ -463,6 +468,7 @@ const Livenes: React.FC<LivenesProps> = ({ instructions, instructions_location }
                         />
                     ) : (
                         <ErrorContent
+                            Messages={Messages}
                             title={Messages.unexpectedError.title}
                             description={Messages.unexpectedError.description}
                             instructions={Messages.unexpectedError.instructions}

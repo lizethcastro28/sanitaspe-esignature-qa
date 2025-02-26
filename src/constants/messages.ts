@@ -1,6 +1,6 @@
 // src/constants/messages.js
 
-export const Messages = {
+export const BodyMessages = {
     unexpectedError: {
         title: "Error inesperado",
         description: "Intenta de nuevo.",

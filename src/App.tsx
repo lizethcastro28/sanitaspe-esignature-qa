@@ -7,8 +7,8 @@ import ErrorContent from './components/ErrorContent';
 import { readStream, fillPdfDocuments } from './utils/functions';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import Body from './components/Body';
-import Instructions from './components/Instructions'; // Asegúrate de importar el componente Instructions
-import { Messages } from './constants/messages';
+import Instructions from './components/Instructions';
+import { BodyMessages } from './constants/messages';
 import {
   Loader,
   Text,
@@ -23,7 +23,7 @@ interface PdfDocument {
   name: string;
   content?: string;
   url?: string;
-};
+}
 
 interface BodyConfig {
   instructions: string;
@@ -48,56 +48,62 @@ const apiGateway = import.meta.env.VITE_API_GATEWAY;
 const App = () => {
   const [name, setName] = useState("");
   const [pdfDocuments, setPdfDocuments] = useState<PdfDocument[]>([]);
-  const [screen, setScreen] = useState<"error" | "loading" | "detector" | "success" | "notLive" | "dataError" | "cancelled" | "dataDocument">("loading");
   const [idStatus, setIdStatus] = useState(1);
   const [circuit, setCircuit] = useState("");
   const [detalleFirma, setDetalleFirma] = useState("");
   const [isRequireDocument, setIsRequireDocument] = useState(false);
+  const [Messages, setMessages] = useState(BodyMessages);
+
   const [headerConfig, setHeaderConfig] = useState<HeaderConfig>({
     content: '',
     url: './logowhite.png',
     location: 'left',
     bgColor: '#EA6A30',
   });
+
   const [bodyConfig, setBodyConfig] = useState<BodyConfig>({
     instructions: '',
     instructions_location: 'left',
   });
+
   const [footerConfig, setFooterConfig] = useState<FooterConfig>({
     content: Messages.footer.defaultContent,
     location: 'center',
     bgColor: '#EA6A30',
   });
+
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false); // Estado para manejar errores
-  const [showInstructions, setShowInstructions] = useState(true); // Nuevo estado para mostrar instrucciones
+  const [hasError, setHasError] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
 
   useEffect(() => {
     const fetchDataAndProcess = async () => {
       const params = new URLSearchParams(window.location.search);
-      const circuit = params.get('circuit');
-      // Verifica si circuit es nulo o vacío
-      if (!circuit || circuit.trim() === '') {
+      const circuitParam = params.get('circuit');
+      const dana = params.get('dana');
+
+      if (!circuitParam || circuitParam.trim() === '') {
         setHasError(true);
         setIsLoading(false);
         return;
       }
-      setCircuit(circuit);
+      setCircuit(circuitParam);
 
-      // Verificar si viene danaParam
-      const dana = params.get('dana');
-      // Si circuit es válido, llama a getData
-      await getData(circuit, dana);
+      await getData(circuitParam, dana);
       setIsLoading(false);
     };
 
     fetchDataAndProcess();
   }, []);
 
+  useEffect(() => {
+    console.log('✅ Mensajes actualizados:', Messages);
+  }, [Messages]);
+
   const getData = async (circuit: string | null, dana: string | null) => {
     let path = `config?circuit=${circuit}`;
     if (dana) {
-      path = `config?circuit=${circuit}&dana=${dana}`;
+      path += `&dana=${dana}`;
     }
 
     try {
@@ -113,6 +119,20 @@ const App = () => {
           const responseBody = await readStream(response.body);
           const responseJson = JSON.parse(responseBody);
           console.log('-----Config: ', responseJson);
+
+          const configPage = responseJson.configPage;
+          if (configPage.body?.content) {
+            try {
+              const parsedContent = typeof configPage.body.content === "string"
+                ? JSON.parse(configPage.body.content)
+                : configPage.body.content;
+
+              setMessages(parsedContent);
+            } catch (error) {
+              console.error('❌ Error al parsear Messages:', error);
+            }
+          }
+
           const docs = responseJson.biometricHistory?.docs;
           if (Array.isArray(docs) && docs.length > 0) {
             const pdfDocuments = fillPdfDocuments(docs);
@@ -122,16 +142,17 @@ const App = () => {
             setHasError(true);
             return;
           }
-          const configPage = responseJson.configPage;
+
           const biometricHistory = responseJson.biometricHistory;
           setName(biometricHistory.signers?.[0]?.name ?? "");
           let { idStatus, isRequireDocument } = biometricHistory;
-          console.log('-----------isRequireDocument:', isRequireDocument);
+
           setIdStatus(idStatus);
           if (idStatus === 1 && isRequireDocument) {
             setIsRequireDocument(true);
             setDetalleFirma("");
           }
+
           setHeaderConfig({
             content: configPage.header?.content || '',
             url: configPage.header?.url || './logowhite.png',
@@ -150,8 +171,7 @@ const App = () => {
             bgColor: configPage.footer?.bgColor || '#EA6A30',
           });
         } else {
-          console.error('No response body found, showing error content', screen);
-          setScreen('error');
+          console.error('No response body found, showing error content');
           setHasError(true);
         }
       }
@@ -162,7 +182,7 @@ const App = () => {
   };
 
   const handleContinue = () => {
-    setShowInstructions(false); // Cambiar el estado para ocultar instrucciones
+    setShowInstructions(false);
   };
 
   return (
@@ -176,6 +196,7 @@ const App = () => {
         </View>
       ) : hasError ? (
         <ErrorContent
+          Messages={Messages}
           title={Messages.dataError.title}
           description={Messages.dataError.description}
           instructions={Messages.dataError.instructions}
@@ -191,16 +212,18 @@ const App = () => {
             bgColor={headerConfig.bgColor}
             content={headerConfig.content}
           />
-          {showInstructions && (idStatus === 1) ? (
+          {showInstructions && idStatus === 1 ? (
             <Instructions
+              Messages={Messages}
               title={Messages.instructions.title}
               description={Messages.instructions.description}
-              instructions={Messages.instructions.instructions} 
+              instructions={Messages.instructions.instructions}
               type="info"
               onContinue={handleContinue}
             />
           ) : (
             <Body
+              Messages={Messages}
               name={name}
               detalleFirma={detalleFirma}
               idStatus={idStatus}
@@ -210,10 +233,7 @@ const App = () => {
               bodyConfig={bodyConfig}
             />
           )}
-          <Footer
-            content={footerConfig.content}
-            bgColor={footerConfig.bgColor}
-          />
+          <Footer content={footerConfig.content} bgColor={footerConfig.bgColor} />
         </>
       )}
     </>
