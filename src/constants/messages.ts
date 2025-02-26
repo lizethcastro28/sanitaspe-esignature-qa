@@ -39,7 +39,7 @@ export const BodyMessages = {
         defaultContent: "DANAconnect Corp. Todos los derechos reservados.",
     },
     docs: {
-        signed: "Estos son tus documentos firmados",
+        signed: "Este es el detalle de tu Firma",
         unsigned: "Por favor Firma estos documentos"
     },
     buttons: {
@@ -60,6 +60,10 @@ export const BodyMessages = {
     },
     accions: {
         loading: "Cargando..."
+    },
+    DocumentViewer: {
+        livenessResults: "Resultados de Liveness",
+        geolocation: "Geolocalización"
     }
 
 };

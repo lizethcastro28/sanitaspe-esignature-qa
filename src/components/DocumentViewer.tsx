@@ -5,6 +5,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import {
   Heading,
   Message,
+  Divider,
 } from '@aws-amplify/ui-react';
 
 interface Document {
@@ -18,9 +19,10 @@ interface DocumentViewerProps {
   pdfDocuments: Document[];
   idStatus: number;
   isRequireDocument: boolean;
+  livenessResult: any;
 }
 
-const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments, idStatus, isRequireDocument }) => {
+const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments, idStatus, isRequireDocument, livenessResult }) => {
   const [message, setMessage] = useState<string>(Messages.docs.signed);
 
   // Usamos useEffect para actualizar el mensaje cuando idStatus cambie
@@ -32,7 +34,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments,
     } else {
       setMessage(Messages.docs.signed);
     }
-  }, [idStatus, isRequireDocument]); 
+  }, [idStatus, isRequireDocument]);
 
   if (isRequireDocument) return null;
 
@@ -41,14 +43,48 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments,
   return (
     <div className="mb-8">
       <Heading level={4} style={{ marginBottom: '1rem', marginTop: '2rem' }}>
-        <Message colorTheme="info">{message}</Message>
+        <Message colorTheme="info" hasIcon={false}>
+          {message}
+        </Message>
       </Heading>
+      {livenessResult.livenessStatus && (
+        <>
+          <Message
+            hasIcon={false}
+            variation="plain"
+            colorTheme="info"
+            heading="Resultados de Liveness">
+            {livenessResult.livenessStatus} - {livenessResult.livenessConfidence} %
+          </Message>
+          <Divider orientation="horizontal" />
+        </>
+      )}
+      {livenessResult.geolocation && (
+        <>
+          <Message
+            hasIcon={false}
+            variation="plain"
+            colorTheme="info"
+            heading="Geolocalización">
+            {livenessResult.geolocation}
+          </Message>
+
+          <Divider orientation="horizontal" />
+        </>
+      )}
 
       {filteredDocuments.map((doc, index) => (
         <div key={index} className="mb-4">
-          <Heading level={5} style={{ marginBottom: '1rem', marginTop: '3rem', textAlign: 'left' }}>
+
+          <Message
+            hasIcon={false}
+            variation="plain"
+            colorTheme="info"
+            heading="Documento(s)">
             {doc.name}
-          </Heading>
+          </Message>
+
+
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
             <Viewer fileUrl={doc.url ? doc.url : `data:application/pdf;base64,${doc.content}`} />
           </Worker>

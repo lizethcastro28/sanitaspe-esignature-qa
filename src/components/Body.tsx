@@ -21,6 +21,7 @@ interface BodyProps {
     instructions: string;
     instructions_location: string;
   };
+  livenessResult: any
 }
 
 const Body: React.FC<BodyProps> = ({
@@ -31,7 +32,8 @@ const Body: React.FC<BodyProps> = ({
   isRequireDocument,
   pdfDocuments,
   circuit,
-  bodyConfig
+  bodyConfig,
+  livenessResult
 }) => {
   const [showBody, setShowBody] = useState(false);
 
@@ -66,6 +68,7 @@ const Body: React.FC<BodyProps> = ({
               pdfDocuments={pdfDocuments}
               idStatus={idStatus}
               isRequireDocument={isRequireDocument}
+              livenessResult={livenessResult}
             />
           </div>
         </>

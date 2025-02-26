@@ -43,6 +43,12 @@ interface FooterConfig {
   bgColor: string;
 }
 
+interface LivenessResult {
+  livenessStatus: string,
+  livenessConfidence: string,
+  geolocation: string
+}
+
 const apiGateway = import.meta.env.VITE_API_GATEWAY;
 
 const App = () => {
@@ -70,6 +76,12 @@ const App = () => {
     content: Messages.footer.defaultContent,
     location: 'center',
     bgColor: '#EA6A30',
+  });
+
+  const [livenessResult, setLivenessResult] = useState<LivenessResult>({
+    livenessStatus: "",
+    livenessConfidence: "",
+    geolocation: ""
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -170,6 +182,11 @@ const App = () => {
             location: configPage.footer?.location || 'center',
             bgColor: configPage.footer?.bgColor || '#EA6A30',
           });
+          setLivenessResult({
+            livenessStatus: responseJson.livenessStatus || "",
+            livenessConfidence: responseJson.livenessConfidence || "",
+            geolocation: responseJson.geolocation || ""
+          });
         } else {
           console.error('No response body found, showing error content');
           setHasError(true);
@@ -231,6 +248,7 @@ const App = () => {
               pdfDocuments={pdfDocuments}
               circuit={circuit}
               bodyConfig={bodyConfig}
+              livenessResult={livenessResult}
             />
           )}
           <Footer content={footerConfig.content} bgColor={footerConfig.bgColor} />
