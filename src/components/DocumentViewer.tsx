@@ -53,7 +53,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments,
             hasIcon={false}
             variation="plain"
             colorTheme="info"
-            heading="Resultados de Liveness">
+            heading={Messages.documentViewer.livenessResults}>
             {livenessResult.livenessStatus} - {livenessResult.livenessConfidence} %
           </Message>
           <Divider orientation="horizontal" />
@@ -65,7 +65,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ Messages, pdfDocuments,
             hasIcon={false}
             variation="plain"
             colorTheme="info"
-            heading="Geolocalización">
+            heading={Messages.documentViewer.geolocation}>
             {livenessResult.geolocation}
           </Message>
 

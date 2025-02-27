@@ -58,12 +58,11 @@ export const BodyMessages = {
         permissionError: "Error: Permiso de cámara denegado. Habilítelo en la configuración del navegador.",
         imagenError: "Error: No se pudo capturar la imagen."
     },
-    accions: {
-        loading: "Cargando..."
-    },
-    DocumentViewer: {
+    documentViewer: {
         livenessResults: "Resultados de Liveness",
         geolocation: "Geolocalización"
+    },
+    accions: {
+        loading: "Cargando..."
     }
-
 };
