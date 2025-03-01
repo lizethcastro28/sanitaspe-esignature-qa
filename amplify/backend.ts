@@ -12,7 +12,7 @@ import {
 import { Policy, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
-import { livenessFunction } from "./functions/liveness/resource";
+import { livenessFunction } from "./functions/liveness-function/resource";
 import { configFunction } from "./functions/config-function/resource";
 import { circuitFunction } from "./functions/circuit-function/resource";
 import { uploadFunction } from "./functions/upload-function/resource"
