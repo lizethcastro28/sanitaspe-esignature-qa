@@ -1,4 +1,4 @@
-// createSessionLiveness.ts
+// createLivenessSession.ts
 
 import * as AWS from 'aws-sdk';
 import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -6,12 +6,12 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 const rekognition = new AWS.Rekognition();
 
 /**
- * createSessionLiveness
+ * createLivenessSession
  * Crea una session en rekognition.createFaceLivenessSession
  * @param event 
  * @returns session
  */
-export const createSessionLiveness = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const createLivenessSession = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     console.log('-----------createSessionLiveness------')
     try {
         const bucket_name = process.env.S3_IMAGENS;

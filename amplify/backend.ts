@@ -12,7 +12,7 @@ import {
 import { Policy, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
-import { myApiFunction } from "./functions/api-function/resource";
+import { livenessFunction } from "./functions/liveness/resource";
 import { configFunction } from "./functions/config-function/resource";
 import { circuitFunction } from "./functions/circuit-function/resource";
 import { uploadFunction } from "./functions/upload-function/resource"
@@ -21,7 +21,7 @@ import { identityVerifyFunction } from "./functions/identity-verify-function/res
 const backend = defineBackend({
   auth,
   data,
-  myApiFunction,
+  livenessFunction,
   configFunction,
   circuitFunction,
   uploadFunction,
@@ -54,7 +54,7 @@ const livenessBucket = new s3.Bucket(apiStack, 'LivenessBucket', {
 // ==============Create resource session============
 // create a new Lambda integration
 const lambdaIntegration = new LambdaIntegration(
-  backend.myApiFunction.resources.lambda
+  backend.livenessFunction.resources.lambda
 );
 // create a new resource path with IAM authorization
 const sessionPath = myRestApi.root.addResource("session", {
@@ -246,7 +246,7 @@ const rekognitionAndS3Policy = new Policy(apiStack, "RekognitionAndS3Policy", {
 });
 
 // attach the policy to the Lambda execution role
-const lambdaRole = backend.myApiFunction.resources.lambda.role as Role;
+const lambdaRole = backend.livenessFunction.resources.lambda.role as Role;
 lambdaRole.attachInlinePolicy(rekognitionAndS3Policy);
 
 // attach the policy to the Lambda execution role

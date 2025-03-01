@@ -1,6 +1,6 @@
 import type { APIGatewayProxyHandler, APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
 import { getFaceLivenessSession } from './getFaceLivenessSession';
-import { createSessionLiveness } from './createSessionLiveness';
+import { createLivenessSession } from './createLivenessSession';
 
 
 /**
@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayEvent): P
             response = await getFaceLivenessSession(event);
             break;
         case "POST":
-            response = await createSessionLiveness(event);
+            response = await createLivenessSession(event);
             break;
         default:
             response = handleUnknownRequest(event);
